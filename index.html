@@ -1,280 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sample Website | Mobile Truck & Trailer Repair</title>
-
-    <style>
-        :root {
-            --yellow: #f4c20d;
-            --dark: #111;
-            --light: #f7f7f7;
-            --text: #333;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background: white;
-            color: var(--text);
-            line-height: 1.6;
-        }
-
-        /* HEADER */
-        header {
-            background: #000;
-            padding: 20px 0;
-            text-align: center;
-            border-bottom: 4px solid var(--yellow);
-        }
-
-        header h1 {
-            color: var(--yellow);
-            font-size: 28px;
-            letter-spacing: 1px;
-        }
-
-        header p {
-            color: #fff;
-            font-size: 14px;
-            opacity: 0.8;
-        }
-
-        /* SLIDESHOW */
-        .slider-container {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            overflow: hidden;
-            background: #000;
-        }
-
-        @media (max-width: 600px) {
-            .slider-container {
-                aspect-ratio: 4 / 3;
-            }
-        }
-
-        .fade-slide {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            opacity: 0;
-            transition: opacity 1.5s ease-in-out;
-        }
-
-        .fade-slide.active {
-            opacity: 1;
-        }
-
-        .nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0,0,0,0.5);
-            color: white;
-            border: none;
-            padding: 15px;
-            cursor: pointer;
-            font-size: 20px;
-            border-radius: 50%;
-            z-index: 10;
-        }
-
-        .prev { left: 15px; }
-        .next { right: 15px; }
-
-        /* SERVICES */
-        .services-section {
-            padding: 60px 20px;
-            background: var(--light);
-            text-align: center;
-        }
-
-        .services-section h2 {
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 25px;
-            max-width: 1100px;
-            margin: 40px auto;
-        }
-
-        .service-card {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border-bottom: 4px solid var(--yellow);
-            transition: transform 0.3s ease;
-        }
-
-        .service-card:hover {
-            transform: translateY(-5px);
-        }
-
-        /* CONTACT + BOOKING */
-        .contact-box,
-        .booking-form {
-            width: 90%;
-            max-width: 600px;
-            margin: 40px auto;
-            background: #000;
-            border: 2px solid var(--yellow);
-            padding: 30px;
-            border-radius: 12px;
-            color: #fff;
-            text-align: center;
-        }
-
-        .contact-box a {
-            color: var(--yellow);
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0 20px;
-            border-radius: 6px;
-            border: none;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 15px;
-            background: var(--yellow);
-            color: #000;
-            font-weight: bold;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 18px;
-            text-transform: uppercase;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>M.I.M General Construction</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
+<body style="margin:0; padding:0; background:#f4f4f4; font-family:Arial, sans-serif;">
 
-<body>
+  <table width="100%" cellpadding="0" cellspacing="0" style="padding:20px 0; background:#f4f4f4;">
+    <tr>
+      <td align="center">
 
-    <!-- HEADER -->
-    <header>
-        <h1>Sample Website Preview</h1>
-        <p>This is a demo layout showing what your business website can look like.</p>
-    </header>
+        <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:6px; overflow:hidden; border:1px solid #e5e5e5;">
 
-    <!-- HERO INTRO -->
-    <div style="text-align:center; padding:40px 20px;">
-        <h2>Mobile Truck & Trailer Repair</h2>
-        <p>24/7 Roadside Diesel Service • Fast • Reliable • Professional</p>
-    </div>
+          <!-- HEADER -->
+          <tr>
+            <td style="background:#111827; color:#ffffff; padding:20px; text-align:center; font-size:22px; font-weight:bold;">
+              M.I.M General Construction
+            </td>
+          </tr>
 
-    <!-- SLIDESHOW -->
-<section class="slider-container">
+          <!-- HERO / INTRO -->
+          <tr>
+            <td style="padding:24px; color:#111827; font-size:15px; line-height:1.6;">
+              <p style="margin:0 0 12px 0;">Quality Construction You Can Trust.</p>
+              <p style="margin:0 0 12px 0;">
+                Professional residential services built with precision, honesty, and craftsmanship.
+                We deliver reliable, high‑quality construction and remodeling with clear communication
+                and results that last.
+              </p>
+            </td>
+          </tr>
 
-    <img class="fade-slide active" src="https://assets.goaaa.com/image/upload/w_2880,c_fill,q_auto,f_auto/v1742591982/AAAGilbert-428_retouched.jpg" alt="Diesel Repair">
+          <!-- SERVICES SNAPSHOT -->
+          <tr>
+            <td style="padding:0 24px 10px 24px; color:#111827; font-size:14px; line-height:1.6;">
+              <p style="font-weight:bold; margin:0 0 6px 0;">Our Services:</p>
+              <ul style="padding-left:18px; margin:0;">
+                <li>Construction – framing, additions, structural work</li>
+                <li>Remodeling – interior and exterior transformations</li>
+                <li>Kitchen &amp; Bath – full renovations, tile, plumbing, cabinetry</li>
+                <li>Carpentry – custom trim, doors, finish work</li>
+                <li>Repairs – drywall, flooring, general maintenance</li>
+                <li>Planning – project management and clear estimates</li>
+              </ul>
+            </td>
+          </tr>
 
-    <button class="nav-btn prev" onclick="changeSlide(-1)">&#10094;</button>
-    <button class="nav-btn next" onclick="changeSlide(1)">&#10095;</button>
-</section>
+          <!-- BUTTON -->
+          <tr>
+            <td align="center" style="padding:18px 24px 24px 24px;">
+              <a href="https://workspace-2026.github.io/M.I.M-General-Construction/#booking"
+                 style="background:#facc15; color:#111827; padding:12px 24px; text-decoration:none;
+                        font-weight:bold; border-radius:4px; font-size:14px; display:inline-block;">
+                Book a Free Estimate
+              </a>
+            </td>
+          </tr>
 
-    <!-- SERVICES -->
-    <section class="services-section">
-        <h2>Professional Diesel Services (Sample)</h2>
-        <p>This section shows how your services will be displayed.</p>
+          <!-- CONTACT -->
+          <tr>
+            <td style="padding:0 24px 20px 24px; color:#111827; font-size:14px; line-height:1.6;">
+              <p style="margin:0 0 6px 0; font-weight:bold;">Contact Us Directly:</p>
+              <p style="margin:0;">
+                Luis Peña: <a href="tel:7084381640" style="color:#111827; text-decoration:none;">(708) 438-1640</a><br />
+                José Patiño: <a href="tel:3129297084" style="color:#111827; text-decoration:none;">(312) 929-7084</a>
+              </p>
+            </td>
+          </tr>
 
-        <div class="services-grid">
+          <!-- FOOTER -->
+          <tr>
+            <td style="padding:16px 24px 20px 24px; text-align:center; font-size:12px; color:#6b7280;">
+              © 2026 M.I.M General Construction • Chicago &amp; Surrounding Suburbs
+            </td>
+          </tr>
 
-            <div class="service-card">
-                <h3>🛠 Mobile Truck Repair</h3>
-                <p>On‑site repairs for semi‑trucks, box trucks, and heavy‑duty vehicles.</p>
-            </div>
+        </table>
 
-            <div class="service-card">
-                <h3>🔧 Trailer Repair</h3>
-                <p>Brakes, lights, wiring, suspension, landing gear, and more.</p>
-            </div>
-
-            <div class="service-card">
-                <h3>💨 Diesel Diagnostics</h3>
-                <p>Full computer diagnostics including EGR, DPF, DEF, sensors & more.</p>
-            </div>
-
-            <div class="service-card">
-                <h3>🔥 DPF / DEF Service</h3>
-                <p>Regens, cleaning, troubleshooting, and aftertreatment repairs.</p>
-            </div>
-
-            <div class="service-card">
-                <h3>🔋 Electrical & Battery</h3>
-                <p>Jump starts, alternators, wiring, shorts, and electrical faults.</p>
-            </div>
-
-            <div class="service-card">
-                <h3>🚚 Roadside Assistance</h3>
-                <p>24/7 emergency breakdown service anywhere in the area.</p>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- BOOKING -->
-    <div class="booking-form">
-        <h2 style="color:var(--yellow)">Request Service (Sample Form)</h2>
-        <p style="margin-bottom:20px;">This is an example of how your booking form will look.</p>
-
-        <form action="#" method="POST" style="text-align:left;">
-            <label>Full Name</label><input type="text" required>
-            <label>Phone Number</label><input type="tel" required>
-            <label>Location</label><input type="text" placeholder="Street, Exit, Mile Marker" required>
-            <label>Issue Description</label><textarea rows="4" required></textarea>
-            <button type="submit" class="submit-btn">Send Request</button>
-        </form>
-    </div>
-
-<!-- CONTACT -->
-<div class="contact-box">
-    <h2 style="color:var(--yellow)">Contact (Sample)</h2>
-
-    <p>📍 Romeoville, IL 60446</p>
-    <p>📞 Phone: <a href="tel:7084381640">(708) 438‑1640</a></p>
-
-    <br>
-
-    <p>Open 24 Hours • Mobile Service Only</p>
-</div>
-
-    <!-- SLIDESHOW SCRIPT -->
-    <script>
-        let currentIndex = 0;
-        const slides = document.querySelectorAll('.fade-slide');
-
-        function showSlide(index) {
-            slides.forEach(s => s.classList.remove('active'));
-            currentIndex = (index + slides.length) % slides.length;
-            slides[currentIndex].classList.add('active');
-        }
-
-        function changeSlide(direction) {
-            showSlide(currentIndex + direction);
-        }
-
-        setInterval(() => changeSlide(1), 4000);
-    </script>
+      </td>
+    </tr>
+  </table>
 
 </body>
 </html>
