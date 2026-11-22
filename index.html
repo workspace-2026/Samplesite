@@ -249,7 +249,7 @@
   <div class="wrap">
     <section class="panel" id="all-makes-lookup" aria-label="All Make and Model Parts Search">
       <h1>Parts Search by Make &amp; Model — 3 Stores</h1>
-      <p class="sub">Pick your vehicle details and part filter, then tap any price or link to open AutoZone, O'Reilly Auto Parts, or Advance Auto Parts.</p>
+      <p class="sub">Pick your vehicle details and part filter, then tap any price or link to search that part on AutoZone, O'Reilly Auto Parts, or Advance Auto Parts.</p>
 
       <form id="vehicle-form">
         <div class="form-grid">
@@ -335,7 +335,7 @@
     <section class="panel" aria-label="Store Comparison Results">
       <div class="section-title">
         <h2 id="results-heading" style="margin:0;font-size:1.1rem;">All Vehicles — 3-Store Part Search</h2>
-        <span class="badge-core">Tap any price to open store website or app</span>
+        <span class="badge-core">Tap any price to search part in store</span>
       </div>
 
       <div class="table-wrap">
@@ -633,7 +633,7 @@
             const storeLabel = getStoreLabel(storeKey);
             return (
               '<td class="' + (isBest ? "best-cell" : "") + '">' +
-              '<a class="price-link" href="' + url + '" target="_blank" rel="noopener noreferrer" data-store-open="' + storeLabel + '" data-part-name="' + part.name + '" title="Open ' + storeLabel + ' website or app for ' + part.name + '">' +
+              '<a class="price-link" href="' + url + '" target="_blank" rel="noopener noreferrer" data-store-open="' + storeLabel + '" data-part-id="' + part.id + '" data-part-name="' + part.name + '" data-search-term="' + part.searchTerm + '" title="Search ' + part.name + ' on ' + storeLabel + '">' +
               '<span>' + fmt(priceVal) + "</span>" +
               (isBest ? '<span class="badge-best">Lowest</span>' : "") +
               "</a></td>"
@@ -693,8 +693,14 @@
         const link = e.target.closest("[data-store-open]");
         if (!link) return;
         const storeName = link.getAttribute("data-store-open");
+        const partId = link.getAttribute("data-part-id");
         const partName = link.getAttribute("data-part-name");
-        els.status.textContent = "Opening " + storeName + " for " + partName + " (" + getVehicleLabel() + ")...";
+        const searchTerm = link.getAttribute("data-search-term");
+        if (partId && Array.from(els.filter.options).some((o) => o.value === partId)) {
+          els.filter.value = partId;
+          renderComparison();
+        }
+        els.status.textContent = 'Searching "' + searchTerm + '" (' + partName + ") on " + storeName + " for " + getVehicleLabel() + "...";
       });
 
       els.make.addEventListener("change", () => {
