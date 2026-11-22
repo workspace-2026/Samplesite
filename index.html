@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Parts Price Comparison</title>
+  <title>All Make & Model Parts Search — 3 Stores</title>
   <style>
     :root {
       --bg: #0b0f17;
@@ -32,7 +32,7 @@
     }
 
     .wrap {
-      max-width: 1120px;
+      max-width: 1140px;
       margin: 0 auto;
     }
 
@@ -42,15 +42,6 @@
       border-radius: var(--radius);
       padding: 20px;
       margin-bottom: 20px;
-    }
-
-    .header-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
     }
 
     h1 {
@@ -65,10 +56,11 @@
       font-size: 0.92rem;
     }
 
-    .controls-grid {
+    .form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
       gap: 12px;
+      margin-top: 16px;
     }
 
     label {
@@ -174,7 +166,7 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 760px;
+      min-width: 780px;
     }
 
     th, td {
@@ -192,9 +184,26 @@
       letter-spacing: 0.04em;
     }
 
-    .price {
+    .price-link {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+      color: var(--text);
+      text-decoration: none;
       font-weight: 700;
       font-size: 0.98rem;
+      padding: 4px 8px;
+      margin: -4px -8px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+    }
+
+    .price-link:hover {
+      color: var(--blue);
+      background: rgba(56, 189, 248, 0.08);
+      border-color: rgba(56, 189, 248, 0.35);
+      text-decoration: underline;
     }
 
     .best-cell {
@@ -238,62 +247,94 @@
 </head>
 <body>
   <div class="wrap">
-    <section class="panel" id="part-lookup" aria-label="Parts Price Lookup">
-      <div class="header-row">
-        <div>
-          <h1>Parts Price Comparison</h1>
-          <p class="sub">Compare part prices across AutoZone, O'Reilly Auto Parts, and Advance Auto Parts.</p>
+    <section class="panel" id="all-makes-lookup" aria-label="All Make and Model Parts Search">
+      <h1>Parts Search by Make &amp; Model — 3 Stores</h1>
+      <p class="sub">Choose your kind of car, year, make, and model to search AutoZone, O'Reilly Auto Parts, and Advance Auto Parts.</p>
+
+      <form id="vehicle-form">
+        <div class="form-grid">
+          <label>
+            Kind of Car
+            <select id="car-kind">
+              <option value="">All Kinds of Cars</option>
+              <option value="Sedan">Sedan</option>
+              <option value="SUV / Crossover">SUV / Crossover</option>
+              <option value="Pickup Truck">Pickup Truck</option>
+              <option value="Van / Minivan">Van / Minivan</option>
+              <option value="Coupe / Hatchback">Coupe / Hatchback</option>
+              <option value="Wagon / Luxury">Wagon / Luxury</option>
+            </select>
+          </label>
+          <label>
+            Year
+            <input type="number" id="car-year" min="1950" max="2027" placeholder="e.g., 2018" />
+          </label>
+          <label>
+            Make
+            <select id="car-make">
+              <option value="">Select Make (or type below)</option>
+            </select>
+          </label>
+          <label>
+            Custom Make (Optional)
+            <input type="text" id="custom-make" placeholder="Type any make" />
+          </label>
+          <label>
+            Model
+            <select id="car-model">
+              <option value="">Select Model (or type below)</option>
+            </select>
+          </label>
+          <label>
+            Custom Model (Optional)
+            <input type="text" id="custom-model" placeholder="Type any model" />
+          </label>
+          <label>
+            Part Filter
+            <select id="part-filter">
+              <option value="all">All Parts</option>
+              <option value="battery">AGM / Car Battery</option>
+              <option value="alternator">Alternator</option>
+              <option value="starter">Starter Motor</option>
+              <option value="belt">Serpentine Belt</option>
+              <option value="waterpump">Water Pump</option>
+              <option value="thermostat">Thermostat &amp; Housing</option>
+              <option value="brakes">Front Brake Pads</option>
+              <option value="rotor">Front Brake Rotor</option>
+              <option value="control_arm">Control Arm</option>
+              <option value="wipers">Wiper Blades</option>
+              <option value="oil">Synthetic Oil (5 Qt)</option>
+              <option value="spark">Spark Plugs</option>
+              <option value="engine_air">Engine Air Filter</option>
+              <option value="cabin_air">Cabin Air Filter</option>
+            </select>
+          </label>
         </div>
-      </div>
 
-      <div class="controls-grid">
-        <label>
-          Part Search
-          <input type="text" id="part-search" placeholder="Search part name (e.g., belt, battery, alternator)" />
-        </label>
-        <label>
-          Part Filter
-          <select id="part-filter">
-            <option value="all">All Parts</option>
-            <option value="battery">AGM / Car Battery</option>
-            <option value="alternator">Alternator</option>
-            <option value="starter">Starter Motor</option>
-            <option value="belt">Serpentine Belt</option>
-            <option value="waterpump">Water Pump</option>
-            <option value="thermostat">Thermostat &amp; Housing</option>
-            <option value="brakes">Front Brake Pads</option>
-            <option value="rotor">Front Brake Rotor</option>
-            <option value="wipers">Wiper Blades</option>
-            <option value="oil">Synthetic Oil (5 Qt)</option>
-            <option value="spark">Spark Plugs</option>
-            <option value="engine_air">Engine Air Filter</option>
-            <option value="cabin_air">Cabin Air Filter</option>
-          </select>
-        </label>
-      </div>
-
-      <div class="actions">
-        <button type="button" class="primary" id="copy-quote-btn">Copy Best-Price Quote</button>
-        <button type="button" class="secondary" id="reset-btn">Reset</button>
-      </div>
-      <div class="status" id="status-msg" role="status" aria-live="polite"></div>
+        <div class="actions">
+          <button type="submit" class="primary">Update Store Searches</button>
+          <button type="button" class="secondary" id="copy-quote-btn">Copy Quote</button>
+          <button type="button" class="secondary" id="reset-btn">Clear</button>
+        </div>
+        <div class="status" id="status-msg" role="status" aria-live="polite"></div>
+      </form>
     </section>
 
-    <section class="panel" aria-label="Price Comparison Table">
+    <section class="panel" aria-label="Store Comparison Results">
       <div class="section-title">
-        <h2 id="results-heading" style="margin:0;font-size:1.1rem;">Store Comparison</h2>
-        <span class="badge-core">Note: Core deposits or promo codes may apply</span>
+        <h2 id="results-heading" style="margin:0;font-size:1.1rem;">All Vehicles — 3-Store Part Search</h2>
+        <span class="badge-core">Tap any price to open store website or app</span>
       </div>
 
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
-              <th>Part Category</th>
+              <th>Part</th>
               <th>AutoZone</th>
               <th>O'Reilly Auto Parts</th>
               <th>Advance Auto Parts</th>
-              <th>Quick Store Search</th>
+              <th>Open Search in Store</th>
             </tr>
           </thead>
           <tbody id="comparison-body"></tbody>
@@ -302,7 +343,7 @@
 
       <div class="quote-bar">
         <div class="quote-total" id="best-total-display">Lowest Combined Subtotal (Shown Items): $0.00</div>
-        <div style="font-size:0.8rem;color:var(--muted);">Verify exact part number and fitment before buying.</div>
+        <div style="font-size:0.8rem;color:var(--muted);">Confirm exact engine and trim fitment on each store page or app.</div>
       </div>
     </section>
   </div>
@@ -317,89 +358,91 @@
         try { localStorage.setItem(key, val); } catch (e) { memoryFallback[key] = val; }
       }
 
+      const KIND_TO_MAKES = {
+        "Sedan": ["Acura", "Alfa Romeo", "Audi", "BMW", "Buick", "Cadillac", "Chevrolet", "Chrysler", "Dodge", "Ford", "Genesis", "Honda", "Hyundai", "Infiniti", "Jaguar", "Kia", "Lexus", "Lincoln", "Maserati", "Mazda", "Mercedes-Benz", "Mercury", "Mitsubishi", "Nissan", "Oldsmobile", "Plymouth", "Polestar", "Pontiac", "Saab", "Saturn", "Subaru", "Suzuki", "Tesla", "Toyota", "Volkswagen", "Volvo"],
+        "SUV / Crossover": ["Acura", "Alfa Romeo", "Aston Martin", "Audi", "BMW", "Buick", "Cadillac", "Chevrolet", "Dodge", "Fiat", "Ford", "Genesis", "GMC", "Honda", "Hyundai", "Infiniti", "Isuzu", "Jaguar", "Jeep", "Kia", "Land Rover", "Lexus", "Lincoln", "Maserati", "Mazda", "Mercedes-Benz", "Mercury", "Mini", "Mitsubishi", "Nissan", "Oldsmobile", "Porsche", "Rivian", "Saturn", "Subaru", "Suzuki", "Tesla", "Toyota", "Volkswagen", "Volvo"],
+        "Pickup Truck": ["Chevrolet", "Dodge", "Ford", "GMC", "Honda", "Hyundai", "Isuzu", "Jeep", "Nissan", "Ram", "Rivian", "Tesla", "Toyota"],
+        "Van / Minivan": ["Chevrolet", "Chrysler", "Dodge", "Fiat", "Ford", "GMC", "Honda", "Hyundai", "Kia", "Mercedes-Benz", "Nissan", "Plymouth", "Ram", "Saturn", "Toyota"],
+        "Coupe / Hatchback": ["Acura", "Alfa Romeo", "Aston Martin", "Audi", "BMW", "Buick", "Cadillac", "Chevrolet", "Dodge", "Fiat", "Ford", "Honda", "Hyundai", "Infiniti", "Jaguar", "Kia", "Lexus", "Mazda", "Mercedes-Benz", "Mini", "Mitsubishi", "Nissan", "Plymouth", "Pontiac", "Porsche", "Saab", "Saturn", "Scion", "Smart", "Subaru", "Suzuki", "Toyota", "Volkswagen"],
+        "Wagon / Luxury": ["Audi", "BMW", "Buick", "Cadillac", "Dodge", "Ford", "Genesis", "Jaguar", "Land Rover", "Lexus", "Lincoln", "Maserati", "Mercedes-Benz", "Mercury", "Porsche", "Saab", "Subaru", "Volvo"]
+      };
+
+      const MAKES_MODELS = {
+        "Acura": ["ILX", "Integra", "MDX", "RDX", "RLX", "TL", "TLX", "TSX"],
+        "Alfa Romeo": ["4C", "Giulia", "Stelvio", "Tonale"],
+        "Aston Martin": ["DB11", "DB12", "DBX", "Vantage"],
+        "Audi": ["A3", "A4", "A5", "A6", "A7", "A8", "Q3", "Q5", "Q7", "Q8", "RS 6", "S4", "S5"],
+        "BMW": ["2 Series", "3 Series", "4 Series", "5 Series", "7 Series", "8 Series", "X1", "X2", "X3", "X4", "X5", "X6", "X7", "Z3", "Z4"],
+        "Buick": ["Cascada", "Encore", "Encore GX", "Enclave", "Envision", "LaCrosse", "LeSabre", "Lucerne", "Regal"],
+        "Cadillac": ["ATS", "CT4", "CT5", "CTS", "Escalade", "SRX", "XT4", "XT5", "XT6", "XTS"],
+        "Chevrolet": ["Avalanche", "Blazer", "Bolt EUV", "Bolt EV", "Camaro", "Colorado", "Corvette", "Cruze", "Equinox", "Express", "Impala", "Malibu", "Silverado 1500", "Silverado 2500HD", "Silverado 3500HD", "Sonic", "Suburban", "Tahoe", "Trailblazer", "Traverse", "Trax"],
+        "Chrysler": ["200", "300", "Pacifica", "PT Cruiser", "Sebring", "Town & Country", "Voyager"],
+        "Dodge": ["Avenger", "Caliber", "Caravan", "Challenger", "Charger", "Dart", "Durango", "Grand Caravan", "Journey", "Magnum", "Nitro", "Ram 1500", "Ram 2500", "Ram 3500"],
+        "Fiat": ["124 Spider", "500", "500L", "500X"],
+        "Ford": ["Bronco", "Bronco Sport", "C-Max", "E-150", "E-250", "E-350", "E-450", "EcoSport", "Edge", "Escape", "Expedition", "Explorer", "F-150", "F-250 Super Duty", "F-350 Super Duty", "Fiesta", "Flex", "Focus", "Fusion", "Maverick", "Mustang", "Ranger", "Taurus", "Transit", "Transit Connect"],
+        "Genesis": ["G70", "G80", "G90", "GV60", "GV70", "GV80"],
+        "GMC": ["Acadia", "Canyon", "Envoy", "Savana", "Sierra 1500", "Sierra 2500HD", "Sierra 3500HD", "Terrain", "Yukon", "Yukon XL"],
+        "Honda": ["Accord", "Civic", "CR-V", "CR-Z", "Element", "Fit", "HR-V", "Insight", "Odyssey", "Passport", "Pilot", "Ridgeline"],
+        "Hyundai": ["Accent", "Azera", "Elantra", "Entourage", "Genesis Coupe", "Ioniq", "Ioniq 5", "Ioniq 6", "Kona", "Palisade", "Santa Fe", "Sonata", "Tucson", "Veloster", "Venue"],
+        "Infiniti": ["EX35", "FX35", "G35", "G37", "JX35", "Q50", "Q60", "Q70", "QX50", "QX55", "QX60", "QX80"],
+        "Isuzu": ["Ascender", "i-280", "i-290", "i-350", "i-370", "Rodeo"],
+        "Jaguar": ["E-PACE", "F-PACE", "F-TYPE", "XE", "XF", "XJ"],
+        "Jeep": ["Cherokee", "Commander", "Compass", "Gladiator", "Grand Cherokee", "Grand Wagoneer", "Liberty", "Patriot", "Renegade", "Wagoneer", "Wrangler"],
+        "Kia": ["Carnival", "Cadenza", "EV6", "Forte", "K5", "Niro", "Optima", "Rio", "Sedona", "Seltos", "Sorento", "Soul", "Sportage", "Stinger", "Telluride"],
+        "Land Rover": ["Defender", "Discovery", "Discovery Sport", "LR2", "LR3", "LR4", "Range Rover", "Range Rover Evoque", "Range Rover Sport", "Range Rover Velar"],
+        "Lexus": ["CT200h", "ES350", "GS350", "GX460", "IS250", "IS300", "IS350", "LC500", "LS460", "LS500", "LX570", "LX600", "NX250", "NX300", "NX350", "RC350", "RX350", "RX450h", "UX200"],
+        "Lincoln": ["Aviator", "Corsair", "MKC", "MKS", "MKT", "MKX", "MKZ", "Navigator", "Town Car"],
+        "Maserati": ["Ghibli", "Levante", "Quattroporte"],
+        "Mazda": ["CX-3", "CX-30", "CX-5", "CX-50", "CX-7", "CX-9", "CX-90", "Mazda2", "Mazda3", "Mazda5", "Mazda6", "MX-5 Miata"],
+        "Mercedes-Benz": ["A220", "C250", "C300", "CLA250", "CLK350", "E350", "E400", "G55 AMG", "G550", "GLA250", "GLB250", "GLC300", "GLE350", "GL450", "GLS450", "ML350", "R350", "S550", "SLK350", "Sprinter"],
+        "Mercury": ["Grand Marquis", "Mariner", "Milan", "Mountaineer"],
+        "Mini": ["Clubman", "Convertible", "Countryman", "Hardtop 2 Door", "Hardtop 4 Door"],
+        "Mitsubishi": ["Eclipse", "Eclipse Cross", "Galant", "Lancer", "Mirage", "Outlander", "Outlander Sport"],
+        "Nissan": ["Altima", "Armada", "Frontier", "GT-R", "Juke", "Kicks", "Leaf", "Maxima", "Murano", "Pathfinder", "Rogue", "Rogue Sport", "Sentra", "Titan", "Versa", "Xterra"],
+        "Oldsmobile": ["Alero", "Bravada", "Cutlass", "Intrigue"],
+        "Plymouth": ["Neon", "Prowler", "Voyager"],
+        "Polestar": ["Polestar 2", "Polestar 3"],
+        "Pontiac": ["G5", "G6", "G8", "Grand Am", "Grand Prix", "Solstice", "Torrent", "Vibe"],
+        "Porsche": ["718 Boxster", "718 Cayman", "911", "Boxster", "Cayenne", "Cayman", "Macan", "Panamera", "Taycan"],
+        "Ram": ["1500", "1500 Classic", "2500", "3500", "ProMaster", "ProMaster City"],
+        "Rivian": ["R1S", "R1T"],
+        "Saab": ["9-3", "9-5"],
+        "Saturn": ["Aura", "Ion", "Outlook", "Relay", "Sky", "Vue"],
+        "Scion": ["FR-S", "iA", "iM", "tC", "xA", "xB", "xD"],
+        "Smart": ["Fortwo"],
+        "Subaru": ["Ascent", "BRZ", "Crosstrek", "Forester", "Impreza", "Legacy", "Outback", "Tribeca", "WRX"],
+        "Suzuki": ["Forenza", "Grand Vitara", "Kizashi", "SX4", "XL7"],
+        "Tesla": ["Cybertruck", "Model 3", "Model S", "Model X", "Model Y"],
+        "Toyota": ["4Runner", "Avalon", "bZ4X", "C-HR", "Camry", "Corolla", "Corolla Cross", "FJ Cruiser", "GR Corolla", "GR86", "Highlander", "Land Cruiser", "Matrix", "Mirai", "Prius", "RAV4", "Sequoia", "Sienna", "Tacoma", "Tundra", "Venza", "Yaris"],
+        "Volkswagen": ["Atlas", "Atlas Cross Sport", "Beetle", "CC", "Golf", "GTI", "ID.4", "Jetta", "Passat", "Tiguan", "Touareg"],
+        "Volvo": ["C30", "S40", "S60", "S80", "S90", "V60", "V90", "XC40", "XC60", "XC70", "XC90"]
+      };
+
       const PARTS_DATA = [
-        {
-          id: "battery",
-          name: "AGM Car Battery (Group H6 / 35)",
-          searchTerm: "AGM car battery",
-          prices: { autozone: 281.99, oreilly: 272.99, advance: 264.99 }
-        },
-        {
-          id: "alternator",
-          name: "Alternator",
-          searchTerm: "alternator",
-          prices: { autozone: 187.99, oreilly: 199.99, advance: 214.99 }
-        },
-        {
-          id: "starter",
-          name: "Starter Motor",
-          searchTerm: "starter motor",
-          prices: { autozone: 155.99, oreilly: 164.99, advance: 172.99 }
-        },
-        {
-          id: "belt",
-          name: "Serpentine Belt",
-          searchTerm: "serpentine belt",
-          prices: { autozone: 38.99, oreilly: 34.99, advance: 36.99 }
-        },
-        {
-          id: "waterpump",
-          name: "Engine Water Pump",
-          searchTerm: "water pump",
-          prices: { autozone: 49.99, oreilly: 54.99, advance: 58.99 }
-        },
-        {
-          id: "thermostat",
-          name: "Thermostat & Housing",
-          searchTerm: "thermostat housing",
-          prices: { autozone: 29.99, oreilly: 27.99, advance: 167.99 }
-        },
-        {
-          id: "brakes",
-          name: "Front Brake Pads Set",
-          searchTerm: "front brake pads",
-          prices: { autozone: 34.00, oreilly: 38.00, advance: 38.00 }
-        },
-        {
-          id: "rotor",
-          name: "Front Brake Rotor (Single)",
-          searchTerm: "front brake rotor",
-          prices: { autozone: 51.00, oreilly: 53.00, advance: 72.00 }
-        },
-        {
-          id: "wipers",
-          name: "Beam Wiper Blade (Single)",
-          searchTerm: "wiper blade",
-          prices: { autozone: 15.00, oreilly: 10.00, advance: 16.00 }
-        },
-        {
-          id: "oil",
-          name: "Full Synthetic Motor Oil (5 Qt)",
-          searchTerm: "full synthetic motor oil 5 qt",
-          prices: { autozone: 34.99, oreilly: 36.49, advance: 45.99 }
-        },
-        {
-          id: "spark",
-          name: "Iridium / Platinum Spark Plug (Each)",
-          searchTerm: "iridium spark plug",
-          prices: { autozone: 9.99, oreilly: 10.49, advance: 8.99 }
-        },
-        {
-          id: "engine_air",
-          name: "Engine Air Filter",
-          searchTerm: "engine air filter",
-          prices: { autozone: 16.00, oreilly: 16.00, advance: 20.00 }
-        },
-        {
-          id: "cabin_air",
-          name: "Cabin Air Filter",
-          searchTerm: "cabin air filter",
-          prices: { autozone: 19.99, oreilly: 22.00, advance: 21.00 }
-        }
+        { id: "battery", name: "AGM Car Battery", searchTerm: "AGM car battery", prices: { autozone: 281.99, oreilly: 272.99, advance: 264.99 } },
+        { id: "alternator", name: "Alternator", searchTerm: "alternator", prices: { autozone: 187.99, oreilly: 199.99, advance: 214.99 } },
+        { id: "starter", name: "Starter Motor", searchTerm: "starter motor", prices: { autozone: 155.99, oreilly: 164.99, advance: 172.99 } },
+        { id: "belt", name: "Serpentine Belt", searchTerm: "serpentine belt", prices: { autozone: 38.99, oreilly: 34.99, advance: 36.99 } },
+        { id: "waterpump", name: "Engine Water Pump", searchTerm: "water pump", prices: { autozone: 49.99, oreilly: 54.99, advance: 52.69 } },
+        { id: "thermostat", name: "Thermostat & Housing", searchTerm: "thermostat housing", prices: { autozone: 29.99, oreilly: 27.99, advance: 167.99 } },
+        { id: "brakes", name: "Front Brake Pads Set", searchTerm: "front brake pads", prices: { autozone: 54.99, oreilly: 38.00, advance: 38.00 } },
+        { id: "rotor", name: "Front Brake Rotor", searchTerm: "front brake rotor", prices: { autozone: 91.99, oreilly: 53.00, advance: 72.00 } },
+        { id: "control_arm", name: "Suspension Control Arm", searchTerm: "control arm", prices: { autozone: 68.99, oreilly: 64.99, advance: 56.09 } },
+        { id: "wipers", name: "Wiper Blade", searchTerm: "wiper blade", prices: { autozone: 15.00, oreilly: 10.00, advance: 16.00 } },
+        { id: "oil", name: "Full Synthetic Motor Oil (5 Qt)", searchTerm: "full synthetic motor oil 5 qt", prices: { autozone: 34.99, oreilly: 36.49, advance: 45.99 } },
+        { id: "spark", name: "Spark Plug", searchTerm: "spark plug", prices: { autozone: 9.99, oreilly: 10.49, advance: 5.49 } },
+        { id: "engine_air", name: "Engine Air Filter", searchTerm: "engine air filter", prices: { autozone: 16.00, oreilly: 16.00, advance: 20.00 } },
+        { id: "cabin_air", name: "Cabin Air Filter", searchTerm: "cabin air filter", prices: { autozone: 19.99, oreilly: 22.00, advance: 21.00 } }
       ];
 
       const els = {
-        search: document.getElementById("part-search"),
+        form: document.getElementById("vehicle-form"),
+        kind: document.getElementById("car-kind"),
+        year: document.getElementById("car-year"),
+        make: document.getElementById("car-make"),
+        customMake: document.getElementById("custom-make"),
+        model: document.getElementById("car-model"),
+        customModel: document.getElementById("custom-model"),
         filter: document.getElementById("part-filter"),
         body: document.getElementById("comparison-body"),
         heading: document.getElementById("results-heading"),
@@ -409,11 +452,74 @@
         resetBtn: document.getElementById("reset-btn")
       };
 
+      function getAllowedMakes() {
+        const k = els.kind.value;
+        const allMakes = Object.keys(MAKES_MODELS).sort();
+        if (!k || !KIND_TO_MAKES[k]) return allMakes;
+        return allMakes.filter((mk) => KIND_TO_MAKES[k].includes(mk));
+      }
+
+      function populateMakes(preserveMake) {
+        const currentMake = preserveMake || els.make.value;
+        const allowed = getAllowedMakes();
+        els.make.innerHTML = '<option value="">Select Make (or type below)</option>';
+        allowed.forEach((mk) => {
+          const opt = document.createElement("option");
+          opt.value = mk;
+          opt.textContent = mk;
+          els.make.appendChild(opt);
+        });
+        if (currentMake && allowed.includes(currentMake)) {
+          els.make.value = currentMake;
+        } else {
+          els.make.value = "";
+        }
+      }
+
+      function populateModels(selectedMake, preserveModel) {
+        const currentModel = preserveModel || els.model.value;
+        els.model.innerHTML = '<option value="">Select Model (or type below)</option>';
+        if (selectedMake && MAKES_MODELS[selectedMake]) {
+          MAKES_MODELS[selectedMake].forEach((md) => {
+            const opt = document.createElement("option");
+            opt.value = md;
+            opt.textContent = md;
+            els.model.appendChild(opt);
+          });
+        }
+        if (currentModel && Array.from(els.model.options).some((o) => o.value === currentModel)) {
+          els.model.value = currentModel;
+        } else {
+          els.model.value = "";
+        }
+      }
+
+      function getActiveMake() {
+        return els.customMake.value.trim() || els.make.value.trim();
+      }
+
+      function getActiveModel() {
+        return els.customModel.value.trim() || els.model.value.trim();
+      }
+
+      function getVehicleLabel() {
+        const parts = [els.year.value.trim(), getActiveMake(), getActiveModel()].filter(Boolean);
+        const kind = els.kind.value.trim();
+        const base = parts.length ? parts.join(" ") : "All Vehicles";
+        return kind ? base + " (" + kind + ")" : base;
+      }
+
       function buildStoreUrl(store, partTerm) {
-        const q = encodeURIComponent(partTerm);
+        const q = encodeURIComponent([els.year.value.trim(), getActiveMake(), getActiveModel(), els.kind.value.trim(), partTerm].filter(Boolean).join(" "));
         if (store === "autozone") return "https://www.autozone.com/searchresult?searchText=" + q;
         if (store === "oreilly") return "https://www.oreillyauto.com/shop/b/search?q=" + q;
         return "https://shop.advanceautoparts.com/web/SearchDisplay?searchTerm=" + q;
+      }
+
+      function getStoreLabel(store) {
+        if (store === "autozone") return "AutoZone";
+        if (store === "oreilly") return "O'Reilly Auto Parts";
+        return "Advance Auto Parts";
       }
 
       function fmt(n) {
@@ -422,49 +528,44 @@
 
       function renderComparison() {
         const selectedPart = els.filter.value;
-        const query = els.search.value.trim().toLowerCase();
+        const rows = selectedPart === "all" ? PARTS_DATA : PARTS_DATA.filter((p) => p.id === selectedPart);
+        const vehicleLabel = getVehicleLabel();
 
-        const rows = PARTS_DATA.filter((p) => {
-          const matchesFilter = selectedPart === "all" || p.id === selectedPart;
-          const matchesSearch = !query || p.name.toLowerCase().includes(query) || p.searchTerm.toLowerCase().includes(query);
-          return matchesFilter && matchesSearch;
-        });
-
-        els.heading.textContent = "Store Comparison (" + rows.length + ")";
-
-        if (!rows.length) {
-          els.body.innerHTML = '<tr><td colspan="5" style="color:var(--muted);">No matching parts found.</td></tr>';
-          els.total.textContent = "Lowest Combined Subtotal (Shown Items): $0.00";
-          els.copyBtn.dataset.quote = "";
-          return;
-        }
+        els.heading.textContent = vehicleLabel + " — 3-Store Part Search (" + rows.length + ")";
 
         let lowestSum = 0;
-        const quoteLines = ["Best Store Prices:"];
+        const quoteLines = [vehicleLabel + " — Sample Store Prices:"];
 
         els.body.innerHTML = rows.map((part) => {
           const entries = [
-            { key: "autozone", label: "AutoZone", val: part.prices.autozone },
-            { key: "oreilly", label: "O'Reilly", val: part.prices.oreilly },
-            { key: "advance", label: "Advance", val: part.prices.advance }
+            { label: "AutoZone", val: part.prices.autozone },
+            { label: "O'Reilly", val: part.prices.oreilly },
+            { label: "Advance", val: part.prices.advance }
           ];
           const minVal = Math.min(...entries.map((e) => e.val));
           const bestStore = entries.find((e) => e.val === minVal);
           lowestSum += minVal;
           quoteLines.push("- " + part.name + ": " + fmt(minVal) + " (" + bestStore.label + ")");
 
-          function cellHtml(priceVal) {
+          function cellHtml(storeKey, priceVal) {
             const isBest = priceVal === minVal;
-            return '<td class="' + (isBest ? "best-cell" : "") + '"><span class="price">' + fmt(priceVal) + '</span>' +
-              (isBest ? '<span class="badge-best">Lowest</span>' : "") + "</td>";
+            const url = buildStoreUrl(storeKey, part.searchTerm);
+            const storeLabel = getStoreLabel(storeKey);
+            return (
+              '<td class="' + (isBest ? "best-cell" : "") + '">' +
+              '<a class="price-link" href="' + url + '" target="_blank" rel="noopener noreferrer" data-store-open="' + storeLabel + '" data-part-name="' + part.name + '" title="Open ' + storeLabel + ' website or app for ' + part.name + '">' +
+              '<span>' + fmt(priceVal) + "</span>" +
+              (isBest ? '<span class="badge-best">Lowest</span>' : "") +
+              "</a></td>"
+            );
           }
 
           return (
             "<tr>" +
             "<td><strong>" + part.name + "</strong></td>" +
-            cellHtml(part.prices.autozone) +
-            cellHtml(part.prices.oreilly) +
-            cellHtml(part.prices.advance) +
+            cellHtml("autozone", part.prices.autozone) +
+            cellHtml("oreilly", part.prices.oreilly) +
+            cellHtml("advance", part.prices.advance) +
             '<td><div class="store-links">' +
             '<a href="' + buildStoreUrl("autozone", part.searchTerm) + '" target="_blank" rel="noopener noreferrer">AutoZone</a>' +
             '<a href="' + buildStoreUrl("oreilly", part.searchTerm) + '" target="_blank" rel="noopener noreferrer">O\'Reilly</a>' +
@@ -477,24 +578,55 @@
         els.total.textContent = "Lowest Combined Subtotal (Shown Items): " + fmt(lowestSum);
         els.copyBtn.dataset.quote = quoteLines.join("\n") + "\nLowest Total: " + fmt(lowestSum);
 
-        safeSet("jobline_plain_parts", JSON.stringify({
-          search: els.search.value,
+        safeSet("jobline_all_makes_parts", JSON.stringify({
+          kind: els.kind.value,
+          year: els.year.value,
+          make: els.make.value,
+          customMake: els.customMake.value,
+          model: els.model.value,
+          customModel: els.customModel.value,
           filter: els.filter.value
         }));
       }
 
-      els.search.addEventListener("input", renderComparison);
+      populateMakes(false);
+
+      els.kind.addEventListener("change", () => {
+        populateMakes(true);
+        populateModels(els.make.value, true);
+        renderComparison();
+      });
+
+      els.body.addEventListener("click", (e) => {
+        const link = e.target.closest("[data-store-open]");
+        if (!link) return;
+        const storeName = link.getAttribute("data-store-open");
+        const partName = link.getAttribute("data-part-name");
+        els.status.textContent = "Opening " + storeName + " for " + partName + " (" + getVehicleLabel() + ")...";
+      });
+
+      els.make.addEventListener("change", () => {
+        populateModels(els.make.value, false);
+        renderComparison();
+      });
+
+      els.customMake.addEventListener("input", renderComparison);
+      els.model.addEventListener("change", renderComparison);
+      els.customModel.addEventListener("input", renderComparison);
+      els.year.addEventListener("input", renderComparison);
       els.filter.addEventListener("change", renderComparison);
+
+      els.form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        renderComparison();
+        els.status.textContent = "Updated store search links for " + getVehicleLabel() + ".";
+      });
 
       els.copyBtn.addEventListener("click", () => {
         const text = els.copyBtn.dataset.quote || "";
-        if (!text) {
-          els.status.textContent = "Nothing to copy.";
-          return;
-        }
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(text).then(() => {
-            els.status.textContent = "Copied best-price quote to clipboard.";
+            els.status.textContent = "Copied quote to clipboard.";
           }).catch(() => {
             els.status.textContent = "Copy unavailable in this browser context.";
           });
@@ -504,17 +636,33 @@
       });
 
       els.resetBtn.addEventListener("click", () => {
-        els.search.value = "";
+        els.kind.value = "";
+        els.year.value = "";
+        els.customMake.value = "";
+        populateMakes(false);
+        populateModels("", false);
+        els.customModel.value = "";
         els.filter.value = "all";
         renderComparison();
-        els.status.textContent = "Reset filters.";
+        els.status.textContent = "Cleared car type and vehicle selection.";
       });
 
-      const saved = safeGet("jobline_plain_parts");
+      const saved = safeGet("jobline_all_makes_parts");
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
-          if (parsed.search !== undefined) els.search.value = parsed.search;
+          if (parsed.kind !== undefined) els.kind.value = parsed.kind;
+          if (parsed.year !== undefined) els.year.value = parsed.year;
+          if (parsed.customMake !== undefined) els.customMake.value = parsed.customMake;
+          populateMakes(true);
+          if (parsed.make !== undefined && Array.from(els.make.options).some((o) => o.value === parsed.make)) {
+            els.make.value = parsed.make;
+          }
+          populateModels(els.make.value, true);
+          if (parsed.model !== undefined && Array.from(els.model.options).some((o) => o.value === parsed.model)) {
+            els.model.value = parsed.model;
+          }
+          if (parsed.customModel !== undefined) els.customModel.value = parsed.customModel;
           if (parsed.filter) els.filter.value = parsed.filter;
         } catch (e) {}
       }
