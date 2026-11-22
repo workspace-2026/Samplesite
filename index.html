@@ -56,34 +56,11 @@
       font-size: 0.92rem;
     }
 
-    .car-type-bar {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 12px;
-      margin-top: 16px;
-      padding: 14px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-    }
-
-    .model-option-bar {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) auto;
-      gap: 12px;
-      align-items: end;
-      margin-top: 14px;
-      padding: 14px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-    }
-
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 12px;
-      margin-top: 14px;
+      margin-top: 16px;
     }
 
     label {
@@ -272,22 +249,10 @@
   <div class="wrap">
     <section class="panel" id="all-makes-lookup" aria-label="All Make and Model Parts Search">
       <h1>Parts Search by Make &amp; Model — 3 Stores</h1>
-      <p class="sub">Search what kind of car you have, pick from an expanded list of makes and models, filter parts, and tap any price or link to open AutoZone, O'Reilly Auto Parts, or Advance Auto Parts.</p>
+      <p class="sub">Pick your vehicle details and part filter, then tap any price or link to open AutoZone, O'Reilly Auto Parts, or Advance Auto Parts.</p>
 
       <form id="vehicle-form">
-        <div class="car-type-bar">
-          <label>
-            Search Car Type
-            <input type="search" id="car-type-search" list="car-type-list" placeholder="Search car type (e.g., SUV, sedan, truck, coupe, van)" />
-            <datalist id="car-type-list">
-              <option value="Sedan"></option>
-              <option value="SUV / Crossover"></option>
-              <option value="Pickup Truck"></option>
-              <option value="Van / Minivan"></option>
-              <option value="Coupe / Hatchback"></option>
-              <option value="Wagon / Luxury"></option>
-            </datalist>
-          </label>
+        <div class="form-grid">
           <label>
             Kind of Car
             <select id="car-kind">
@@ -300,28 +265,17 @@
               <option value="Wagon / Luxury">Wagon / Luxury</option>
             </select>
           </label>
-        </div>
-
-        <div class="model-option-bar" role="region" aria-label="Model Option Bar">
           <label>
             Search Model
-            <input type="search" id="model-search" list="all-models-list" placeholder="Search any model (e.g., Compass, F-150, Camry)" />
+            <input type="search" id="model-search" list="all-models-list" placeholder="Search model (e.g., Compass, F-150)" />
             <datalist id="all-models-list"></datalist>
           </label>
           <label>
             Model Option
             <select id="car-model">
-              <option value="">Select Model (or type below)</option>
+              <option value="">Select Model</option>
             </select>
           </label>
-          <label>
-            Custom Model (Optional)
-            <input type="text" id="custom-model" placeholder="Type any model" />
-          </label>
-          <button type="button" class="secondary" id="clear-model-btn">Clear Model</button>
-        </div>
-
-        <div class="form-grid">
           <label>
             Year
             <input type="number" id="car-year" min="1950" max="2027" placeholder="e.g., 2018" />
@@ -329,12 +283,8 @@
           <label>
             Make
             <select id="car-make">
-              <option value="">Select Make (or type below)</option>
+              <option value="">Select Make</option>
             </select>
-          </label>
-          <label>
-            Custom Make (Optional)
-            <input type="text" id="custom-make" placeholder="Type any make" />
           </label>
           <label>
             Part Filter
@@ -370,10 +320,6 @@
               <option value="engine_air">Engine Air Filter</option>
               <option value="cabin_air">Cabin Air Filter</option>
             </select>
-          </label>
-          <label>
-            Search Part Name
-            <input type="search" id="part-search" placeholder="Filter parts (e.g., fuse, bulb, relay, coil)" />
           </label>
         </div>
 
@@ -423,15 +369,6 @@
       function safeSet(key, val) {
         try { localStorage.setItem(key, val); } catch (e) { memoryFallback[key] = val; }
       }
-
-      const CAR_TYPES = [
-        "Sedan",
-        "SUV / Crossover",
-        "Pickup Truck",
-        "Van / Minivan",
-        "Coupe / Hatchback",
-        "Wagon / Luxury"
-      ];
 
       const MAKES_MODELS = {
         "Acura": ["ILX", "Integra", "MDX", "RDX", "RLX", "TL", "TLX", "TSX"],
@@ -558,18 +495,13 @@
 
       const els = {
         form: document.getElementById("vehicle-form"),
-        typeSearch: document.getElementById("car-type-search"),
         kind: document.getElementById("car-kind"),
         modelSearch: document.getElementById("model-search"),
         allModelsList: document.getElementById("all-models-list"),
-        clearModelBtn: document.getElementById("clear-model-btn"),
         year: document.getElementById("car-year"),
         make: document.getElementById("car-make"),
-        customMake: document.getElementById("custom-make"),
         model: document.getElementById("car-model"),
-        customModel: document.getElementById("custom-model"),
         filter: document.getElementById("part-filter"),
-        partSearch: document.getElementById("part-search"),
         body: document.getElementById("comparison-body"),
         heading: document.getElementById("results-heading"),
         total: document.getElementById("best-total-display"),
@@ -592,20 +524,6 @@
         els.allModelsList.innerHTML = models.map((m) => '<option value="' + m.replace(/"/g, "&quot;") + '"></option>').join("");
       }
 
-      function matchCarTypeFromSearch(rawText) {
-        const cleaned = (rawText || "").trim().toLowerCase();
-        if (!cleaned) return "";
-        const exact = CAR_TYPES.find((t) => t.toLowerCase() === cleaned);
-        if (exact) return exact;
-        if (cleaned.includes("suv") || cleaned.includes("cross")) return "SUV / Crossover";
-        if (cleaned.includes("truck") || cleaned.includes("pickup")) return "Pickup Truck";
-        if (cleaned.includes("van") || cleaned.includes("minivan")) return "Van / Minivan";
-        if (cleaned.includes("coupe") || cleaned.includes("hatch")) return "Coupe / Hatchback";
-        if (cleaned.includes("wagon") || cleaned.includes("lux")) return "Wagon / Luxury";
-        if (cleaned.includes("sedan")) return "Sedan";
-        return CAR_TYPES.find((t) => t.toLowerCase().includes(cleaned)) || "";
-      }
-
       function getAllowedMakes() {
         const k = els.kind.value;
         const allMakes = Object.keys(MAKES_MODELS).sort();
@@ -616,7 +534,7 @@
       function populateMakes(preserveMake) {
         const currentMake = preserveMake || els.make.value;
         const allowed = getAllowedMakes();
-        els.make.innerHTML = '<option value="">Select Make (or type below)</option>';
+        els.make.innerHTML = '<option value="">Select Make</option>';
         allowed.forEach((mk) => {
           const opt = document.createElement("option");
           opt.value = mk;
@@ -638,7 +556,7 @@
           : getAllUniqueModels();
         const filtered = baseList.filter((md) => !term || md.toLowerCase().includes(term));
 
-        els.model.innerHTML = '<option value="">Select Model (or type below)</option>';
+        els.model.innerHTML = '<option value="">Select Model</option>';
         filtered.forEach((md) => {
           const opt = document.createElement("option");
           opt.value = md;
@@ -653,15 +571,15 @@
       }
 
       function getActiveMake() {
-        return els.customMake.value.trim() || els.make.value.trim();
+        return els.make.value.trim();
       }
 
       function getActiveModel() {
-        return els.customModel.value.trim() || els.model.value.trim() || els.modelSearch.value.trim();
+        return els.model.value.trim() || els.modelSearch.value.trim();
       }
 
       function getCarTypeLabel() {
-        return els.kind.value.trim() || els.typeSearch.value.trim();
+        return els.kind.value.trim();
       }
 
       function getVehicleLabel() {
@@ -688,34 +606,15 @@
         return "$" + Number(n).toFixed(2);
       }
 
-      function getFilteredParts() {
-        const selectedPart = els.filter.value;
-        const keyword = (els.partSearch.value || "").trim().toLowerCase();
-        return PARTS_DATA.filter((p) => {
-          const matchesSelect = selectedPart === "all" || p.id === selectedPart;
-          const matchesText = !keyword ||
-            p.name.toLowerCase().includes(keyword) ||
-            p.searchTerm.toLowerCase().includes(keyword) ||
-            p.id.toLowerCase().includes(keyword);
-          return matchesSelect && matchesText;
-        });
-      }
-
       function renderComparison() {
-        const rows = getFilteredParts();
+        const selectedPart = els.filter.value;
+        const rows = selectedPart === "all" ? PARTS_DATA : PARTS_DATA.filter((p) => p.id === selectedPart);
         const vehicleLabel = getVehicleLabel();
 
         els.heading.textContent = vehicleLabel + " — 3-Store Part Search (" + rows.length + ")";
 
         let lowestSum = 0;
         const quoteLines = [vehicleLabel + " — Sample Store Prices:"];
-
-        if (!rows.length) {
-          els.body.innerHTML = '<tr><td colspan="5" style="color:var(--muted);">No matching parts found. Try clearing the part search or choosing All Parts.</td></tr>';
-          els.total.textContent = "Lowest Combined Subtotal (Shown Items): $0.00";
-          els.copyBtn.dataset.quote = quoteLines.join("\n") + "\nLowest Total: $0.00";
-          return;
-        }
 
         els.body.innerHTML = rows.map((part) => {
           const entries = [
@@ -760,16 +659,12 @@
         els.copyBtn.dataset.quote = quoteLines.join("\n") + "\nLowest Total: " + fmt(lowestSum);
 
         safeSet("jobline_all_makes_parts", JSON.stringify({
-          typeSearch: els.typeSearch.value,
           kind: els.kind.value,
           modelSearch: els.modelSearch.value,
           year: els.year.value,
           make: els.make.value,
-          customMake: els.customMake.value,
           model: els.model.value,
-          customModel: els.customModel.value,
-          filter: els.filter.value,
-          partSearch: els.partSearch.value
+          filter: els.filter.value
         }));
       }
 
@@ -777,24 +672,7 @@
       populateModelDatalist("");
       populateModels("", false, "");
 
-      els.typeSearch.addEventListener("input", () => {
-        const matched = matchCarTypeFromSearch(els.typeSearch.value);
-        if (matched && els.kind.value !== matched) {
-          els.kind.value = matched;
-          populateMakes(true);
-          populateModels(els.make.value, true);
-        } else if (!els.typeSearch.value.trim()) {
-          els.kind.value = "";
-          populateMakes(true);
-          populateModels(els.make.value, true);
-        }
-        renderComparison();
-      });
-
       els.kind.addEventListener("change", () => {
-        if (els.kind.value) {
-          els.typeSearch.value = els.kind.value;
-        }
         populateMakes(true);
         populateModels(els.make.value, true);
         renderComparison();
@@ -807,19 +685,8 @@
         const exactMatch = Array.from(els.model.options).find((o) => o.value && o.value.toLowerCase() === typed.toLowerCase());
         if (exactMatch) {
           els.model.value = exactMatch.value;
-          els.customModel.value = "";
         }
         renderComparison();
-      });
-
-      els.clearModelBtn.addEventListener("click", () => {
-        els.modelSearch.value = "";
-        els.model.value = "";
-        els.customModel.value = "";
-        populateModelDatalist("");
-        populateModels(els.make.value, false, "");
-        renderComparison();
-        els.status.textContent = "Cleared model selection.";
       });
 
       els.body.addEventListener("click", (e) => {
@@ -835,18 +702,9 @@
         renderComparison();
       });
 
-      els.customMake.addEventListener("input", renderComparison);
-      els.model.addEventListener("change", () => {
-        if (els.model.value) els.customModel.value = "";
-        renderComparison();
-      });
-      els.customModel.addEventListener("input", () => {
-        if (els.customModel.value.trim()) els.model.value = "";
-        renderComparison();
-      });
+      els.model.addEventListener("change", renderComparison);
       els.year.addEventListener("input", renderComparison);
       els.filter.addEventListener("change", renderComparison);
-      els.partSearch.addEventListener("input", renderComparison);
 
       els.form.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -868,30 +726,24 @@
       });
 
       els.resetBtn.addEventListener("click", () => {
-        els.typeSearch.value = "";
         els.kind.value = "";
         els.modelSearch.value = "";
         els.year.value = "";
-        els.customMake.value = "";
         populateMakes(false);
         populateModelDatalist("");
         populateModels("", false, "");
-        els.customModel.value = "";
         els.filter.value = "all";
-        els.partSearch.value = "";
         renderComparison();
-        els.status.textContent = "Cleared car type search and vehicle selection.";
+        els.status.textContent = "Cleared vehicle selection.";
       });
 
       const saved = safeGet("jobline_all_makes_parts");
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
-          if (parsed.typeSearch !== undefined) els.typeSearch.value = parsed.typeSearch;
           if (parsed.kind !== undefined) els.kind.value = parsed.kind;
           if (parsed.modelSearch !== undefined) els.modelSearch.value = parsed.modelSearch;
           if (parsed.year !== undefined) els.year.value = parsed.year;
-          if (parsed.customMake !== undefined) els.customMake.value = parsed.customMake;
           populateMakes(true);
           if (parsed.make !== undefined && Array.from(els.make.options).some((o) => o.value === parsed.make)) {
             els.make.value = parsed.make;
@@ -901,9 +753,7 @@
           if (parsed.model !== undefined && Array.from(els.model.options).some((o) => o.value === parsed.model)) {
             els.model.value = parsed.model;
           }
-          if (parsed.customModel !== undefined) els.customModel.value = parsed.customModel;
           if (parsed.filter) els.filter.value = parsed.filter;
-          if (parsed.partSearch !== undefined) els.partSearch.value = parsed.partSearch;
         } catch (e) {}
       }
 
