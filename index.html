@@ -56,11 +56,22 @@
       font-size: 0.92rem;
     }
 
+    .car-type-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+      padding: 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
     .form-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
       gap: 12px;
-      margin-top: 16px;
+      margin-top: 14px;
     }
 
     label {
@@ -249,10 +260,22 @@
   <div class="wrap">
     <section class="panel" id="all-makes-lookup" aria-label="All Make and Model Parts Search">
       <h1>Parts Search by Make &amp; Model — 3 Stores</h1>
-      <p class="sub">Choose your kind of car, year, make, and model to search AutoZone, O'Reilly Auto Parts, and Advance Auto Parts.</p>
+      <p class="sub">Search what kind of car you have, pick your year, make, and model, and tap any price or link to open AutoZone, O'Reilly Auto Parts, or Advance Auto Parts.</p>
 
       <form id="vehicle-form">
-        <div class="form-grid">
+        <div class="car-type-bar">
+          <label>
+            Search Car Type
+            <input type="search" id="car-type-search" list="car-type-list" placeholder="Search car type (e.g., SUV, sedan, truck, coupe, van)" />
+            <datalist id="car-type-list">
+              <option value="Sedan"></option>
+              <option value="SUV / Crossover"></option>
+              <option value="Pickup Truck"></option>
+              <option value="Van / Minivan"></option>
+              <option value="Coupe / Hatchback"></option>
+              <option value="Wagon / Luxury"></option>
+            </datalist>
+          </label>
           <label>
             Kind of Car
             <select id="car-kind">
@@ -265,6 +288,9 @@
               <option value="Wagon / Luxury">Wagon / Luxury</option>
             </select>
           </label>
+        </div>
+
+        <div class="form-grid">
           <label>
             Year
             <input type="number" id="car-year" min="1950" max="2027" placeholder="e.g., 2018" />
@@ -358,6 +384,15 @@
         try { localStorage.setItem(key, val); } catch (e) { memoryFallback[key] = val; }
       }
 
+      const CAR_TYPES = [
+        "Sedan",
+        "SUV / Crossover",
+        "Pickup Truck",
+        "Van / Minivan",
+        "Coupe / Hatchback",
+        "Wagon / Luxury"
+      ];
+
       const KIND_TO_MAKES = {
         "Sedan": ["Acura", "Alfa Romeo", "Audi", "BMW", "Buick", "Cadillac", "Chevrolet", "Chrysler", "Dodge", "Ford", "Genesis", "Honda", "Hyundai", "Infiniti", "Jaguar", "Kia", "Lexus", "Lincoln", "Maserati", "Mazda", "Mercedes-Benz", "Mercury", "Mitsubishi", "Nissan", "Oldsmobile", "Plymouth", "Polestar", "Pontiac", "Saab", "Saturn", "Subaru", "Suzuki", "Tesla", "Toyota", "Volkswagen", "Volvo"],
         "SUV / Crossover": ["Acura", "Alfa Romeo", "Aston Martin", "Audi", "BMW", "Buick", "Cadillac", "Chevrolet", "Dodge", "Fiat", "Ford", "Genesis", "GMC", "Honda", "Hyundai", "Infiniti", "Isuzu", "Jaguar", "Jeep", "Kia", "Land Rover", "Lexus", "Lincoln", "Maserati", "Mazda", "Mercedes-Benz", "Mercury", "Mini", "Mitsubishi", "Nissan", "Oldsmobile", "Porsche", "Rivian", "Saturn", "Subaru", "Suzuki", "Tesla", "Toyota", "Volkswagen", "Volvo"],
@@ -437,6 +472,7 @@
 
       const els = {
         form: document.getElementById("vehicle-form"),
+        typeSearch: document.getElementById("car-type-search"),
         kind: document.getElementById("car-kind"),
         year: document.getElementById("car-year"),
         make: document.getElementById("car-make"),
@@ -451,6 +487,20 @@
         copyBtn: document.getElementById("copy-quote-btn"),
         resetBtn: document.getElementById("reset-btn")
       };
+
+      function matchCarTypeFromSearch(rawText) {
+        const cleaned = (rawText || "").trim().toLowerCase();
+        if (!cleaned) return "";
+        const exact = CAR_TYPES.find((t) => t.toLowerCase() === cleaned);
+        if (exact) return exact;
+        if (cleaned.includes("suv") || cleaned.includes("cross")) return "SUV / Crossover";
+        if (cleaned.includes("truck") || cleaned.includes("pickup")) return "Pickup Truck";
+        if (cleaned.includes("van") || cleaned.includes("minivan")) return "Van / Minivan";
+        if (cleaned.includes("coupe") || cleaned.includes("hatch")) return "Coupe / Hatchback";
+        if (cleaned.includes("wagon") || cleaned.includes("lux")) return "Wagon / Luxury";
+        if (cleaned.includes("sedan")) return "Sedan";
+        return CAR_TYPES.find((t) => t.toLowerCase().includes(cleaned)) || "";
+      }
 
       function getAllowedMakes() {
         const k = els.kind.value;
@@ -502,15 +552,19 @@
         return els.customModel.value.trim() || els.model.value.trim();
       }
 
+      function getCarTypeLabel() {
+        return els.kind.value.trim() || els.typeSearch.value.trim();
+      }
+
       function getVehicleLabel() {
         const parts = [els.year.value.trim(), getActiveMake(), getActiveModel()].filter(Boolean);
-        const kind = els.kind.value.trim();
+        const kind = getCarTypeLabel();
         const base = parts.length ? parts.join(" ") : "All Vehicles";
         return kind ? base + " (" + kind + ")" : base;
       }
 
       function buildStoreUrl(store, partTerm) {
-        const q = encodeURIComponent([els.year.value.trim(), getActiveMake(), getActiveModel(), els.kind.value.trim(), partTerm].filter(Boolean).join(" "));
+        const q = encodeURIComponent([els.year.value.trim(), getActiveMake(), getActiveModel(), getCarTypeLabel(), partTerm].filter(Boolean).join(" "));
         if (store === "autozone") return "https://www.autozone.com/searchresult?searchText=" + q;
         if (store === "oreilly") return "https://www.oreillyauto.com/shop/b/search?q=" + q;
         return "https://shop.advanceautoparts.com/web/SearchDisplay?searchTerm=" + q;
@@ -579,6 +633,7 @@
         els.copyBtn.dataset.quote = quoteLines.join("\n") + "\nLowest Total: " + fmt(lowestSum);
 
         safeSet("jobline_all_makes_parts", JSON.stringify({
+          typeSearch: els.typeSearch.value,
           kind: els.kind.value,
           year: els.year.value,
           make: els.make.value,
@@ -591,7 +646,24 @@
 
       populateMakes(false);
 
+      els.typeSearch.addEventListener("input", () => {
+        const matched = matchCarTypeFromSearch(els.typeSearch.value);
+        if (matched && els.kind.value !== matched) {
+          els.kind.value = matched;
+          populateMakes(true);
+          populateModels(els.make.value, true);
+        } else if (!els.typeSearch.value.trim()) {
+          els.kind.value = "";
+          populateMakes(true);
+          populateModels(els.make.value, true);
+        }
+        renderComparison();
+      });
+
       els.kind.addEventListener("change", () => {
+        if (els.kind.value) {
+          els.typeSearch.value = els.kind.value;
+        }
         populateMakes(true);
         populateModels(els.make.value, true);
         renderComparison();
@@ -636,6 +708,7 @@
       });
 
       els.resetBtn.addEventListener("click", () => {
+        els.typeSearch.value = "";
         els.kind.value = "";
         els.year.value = "";
         els.customMake.value = "";
@@ -644,13 +717,14 @@
         els.customModel.value = "";
         els.filter.value = "all";
         renderComparison();
-        els.status.textContent = "Cleared car type and vehicle selection.";
+        els.status.textContent = "Cleared car type search and vehicle selection.";
       });
 
       const saved = safeGet("jobline_all_makes_parts");
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
+          if (parsed.typeSearch !== undefined) els.typeSearch.value = parsed.typeSearch;
           if (parsed.kind !== undefined) els.kind.value = parsed.kind;
           if (parsed.year !== undefined) els.year.value = parsed.year;
           if (parsed.customMake !== undefined) els.customMake.value = parsed.customMake;
