@@ -32,7 +32,7 @@
     }
 
     .wrap {
-      max-width: 1060px;
+      max-width: 1120px;
       margin: 0 auto;
     }
 
@@ -50,7 +50,7 @@
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     h1 {
@@ -65,14 +65,14 @@
       font-size: 0.92rem;
     }
 
-    .presets {
+    .presets, .group-pills {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
-    .chip {
+    .chip, .pill {
       background: var(--surface-2);
       color: var(--text);
       border: 1px solid var(--border);
@@ -82,8 +82,15 @@
       cursor: pointer;
     }
 
-    .chip:hover {
+    .chip:hover, .pill:hover {
       border-color: var(--emerald);
+    }
+
+    .pill.active {
+      background: var(--emerald-bg);
+      border-color: var(--emerald);
+      color: var(--emerald);
+      font-weight: 700;
     }
 
     .form-grid {
@@ -195,7 +202,7 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 720px;
+      min-width: 760px;
     }
 
     th, td {
@@ -263,7 +270,7 @@
       <div class="header-row">
         <div>
           <h1>Vehicle Info &amp; Parts Price Comparison</h1>
-          <p class="sub">Enter car details to compare sample part prices and open direct searches for AutoZone, O'Reilly Auto Parts, and Advance Auto Parts.</p>
+          <p class="sub">Fill car details and filter by part or system across AutoZone, O'Reilly Auto Parts, and Advance Auto Parts.</p>
         </div>
       </div>
 
@@ -271,6 +278,15 @@
         <button type="button" class="chip" data-preset="2011|Jeep|Compass|2.4L 4-Cyl|1C4NJDBB1BD123456">2011 Jeep Compass 2.4L</button>
         <button type="button" class="chip" data-preset="2013|Mercedes-Benz|GL450|4.6L V8|4JGDF7CE6DA123456">2013 Mercedes-Benz GL450</button>
         <button type="button" class="chip" data-preset="2009|Ford|Fusion|2.5L 4-Cyl|3FAHP07Z79R123456">2009 Ford Fusion 2.5L</button>
+        <button type="button" class="chip" data-preset="2011|Ford|E-450|6.8L V10|1FDFE4FS7BDA12345">2011 Ford E-450 6.8L</button>
+      </div>
+
+      <div class="group-pills" role="group" aria-label="System group filters">
+        <button type="button" class="pill active" data-group="all">All Parts (12)</button>
+        <button type="button" class="pill" data-group="electrical">Charging &amp; Starting</button>
+        <button type="button" class="pill" data-group="cooling">Cooling &amp; Belts</button>
+        <button type="button" class="pill" data-group="brakes">Brakes &amp; Wipers</button>
+        <button type="button" class="pill" data-group="tuneup">Filters &amp; Tune-Up</button>
       </div>
 
       <form id="vehicle-form">
@@ -296,14 +312,22 @@
             <input type="text" id="car-vin" maxlength="17" placeholder="17-character VIN" />
           </label>
           <label>
-            Part Filter
+            Specific Part Filter
             <select id="part-filter">
-              <option value="all">All Common Parts</option>
+              <option value="all">All Selected Group Parts</option>
               <option value="battery">AGM / Car Battery</option>
-              <option value="oil">Synthetic Oil &amp; Filter</option>
-              <option value="spark">Spark Plugs</option>
+              <option value="alternator">Alternator</option>
+              <option value="starter">Starter Motor</option>
+              <option value="belt">Serpentine Belt</option>
+              <option value="waterpump">Water Pump</option>
+              <option value="thermostat">Thermostat &amp; Housing</option>
               <option value="brakes">Front Brake Pads</option>
+              <option value="rotor">Front Brake Rotor</option>
               <option value="wipers">Wiper Blades</option>
+              <option value="oil">Synthetic Oil (5 Qt)</option>
+              <option value="spark">Spark Plugs</option>
+              <option value="engine_air">Engine Air Filter</option>
+              <option value="cabin_air">Cabin Air Filter</option>
             </select>
           </label>
         </div>
@@ -320,7 +344,7 @@
     <section class="panel" aria-label="Price Comparison Table">
       <div class="section-title">
         <h2 id="results-heading" style="margin:0;font-size:1.1rem;">2011 Jeep Compass 2.4L — Store Comparison</h2>
-        <span class="badge-core">Note: Core charges or promo codes may apply at checkout</span>
+        <span class="badge-core">Note: Core deposits or promo codes may apply</span>
       </div>
 
       <div class="table-wrap">
@@ -340,7 +364,7 @@
 
       <div class="quote-bar">
         <div class="quote-total" id="best-total-display">Lowest Combined Subtotal (Shown Items): $0.00</div>
-        <div style="font-size:0.8rem;color:var(--muted);">Always verify exact fitment by VIN or trim before purchase.</div>
+        <div style="font-size:0.8rem;color:var(--muted);">Verify exact part number and trim fitment before buying.</div>
       </div>
     </section>
   </div>
@@ -358,35 +382,98 @@
       const PARTS_DATA = [
         {
           id: "battery",
+          group: "electrical",
           name: "AGM Car Battery (Group H6 / 35)",
           searchTerm: "AGM car battery",
           prices: { autozone: 281.99, oreilly: 272.99, advance: 264.99 }
         },
         {
+          id: "alternator",
+          group: "electrical",
+          name: "Alternator",
+          searchTerm: "alternator",
+          prices: { autozone: 187.99, oreilly: 199.99, advance: 214.99 }
+        },
+        {
+          id: "starter",
+          group: "electrical",
+          name: "Starter Motor",
+          searchTerm: "starter motor",
+          prices: { autozone: 155.99, oreilly: 164.99, advance: 172.99 }
+        },
+        {
+          id: "belt",
+          group: "cooling",
+          name: "Serpentine Belt",
+          searchTerm: "serpentine belt",
+          prices: { autozone: 38.99, oreilly: 34.99, advance: 36.99 }
+        },
+        {
+          id: "waterpump",
+          group: "cooling",
+          name: "Engine Water Pump",
+          searchTerm: "water pump",
+          prices: { autozone: 49.99, oreilly: 54.99, advance: 58.99 }
+        },
+        {
+          id: "thermostat",
+          group: "cooling",
+          name: "Thermostat & Housing",
+          searchTerm: "thermostat housing",
+          prices: { autozone: 29.99, oreilly: 27.99, advance: 167.99 }
+        },
+        {
+          id: "brakes",
+          group: "brakes",
+          name: "Front Brake Pads Set",
+          searchTerm: "front brake pads",
+          prices: { autozone: 34.00, oreilly: 38.00, advance: 38.00 }
+        },
+        {
+          id: "rotor",
+          group: "brakes",
+          name: "Front Brake Rotor (Single)",
+          searchTerm: "front brake rotor",
+          prices: { autozone: 51.00, oreilly: 53.00, advance: 72.00 }
+        },
+        {
+          id: "wipers",
+          group: "brakes",
+          name: "Beam Wiper Blade (Single)",
+          searchTerm: "wiper blade",
+          prices: { autozone: 15.00, oreilly: 10.00, advance: 16.00 }
+        },
+        {
           id: "oil",
+          group: "tuneup",
           name: "Full Synthetic Motor Oil (5 Qt)",
           searchTerm: "full synthetic motor oil 5 qt",
           prices: { autozone: 34.99, oreilly: 36.49, advance: 45.99 }
         },
         {
           id: "spark",
+          group: "tuneup",
           name: "Iridium / Platinum Spark Plug (Each)",
           searchTerm: "iridium spark plug",
           prices: { autozone: 9.99, oreilly: 10.49, advance: 8.99 }
         },
         {
-          id: "brakes",
-          name: "Front Brake Pads Set",
-          searchTerm: "front brake pads",
-          prices: { autozone: 34.00, oreilly: 38.00, advance: 38.00 }
+          id: "engine_air",
+          group: "tuneup",
+          name: "Engine Air Filter",
+          searchTerm: "engine air filter",
+          prices: { autozone: 16.00, oreilly: 16.00, advance: 20.00 }
         },
         {
-          id: "wipers",
-          name: "Beam Wiper Blade (Single)",
-          searchTerm: "wiper blade",
-          prices: { autozone: 15.00, oreilly: 10.00, advance: 16.00 }
+          id: "cabin_air",
+          group: "tuneup",
+          name: "Cabin Air Filter",
+          searchTerm: "cabin air filter",
+          prices: { autozone: 19.99, oreilly: 22.00, advance: 21.00 }
         }
       ];
+
+      let activeGroup = "all";
 
       const els = {
         form: document.getElementById("vehicle-form"),
@@ -421,10 +508,23 @@
         return "$" + Number(n).toFixed(2);
       }
 
+      function syncGroupButtons() {
+        document.querySelectorAll("[data-group]").forEach((btn) => {
+          btn.classList.toggle("active", btn.getAttribute("data-group") === activeGroup);
+        });
+      }
+
       function renderComparison() {
-        const selectedFilter = els.filter.value;
-        const rows = selectedFilter === "all" ? PARTS_DATA : PARTS_DATA.filter((p) => p.id === selectedFilter);
-        els.heading.textContent = (getVehicleLabel() || "Vehicle") + " — Store Comparison";
+        const selectedPart = els.filter.value;
+        let rows = PARTS_DATA;
+
+        if (selectedPart !== "all") {
+          rows = rows.filter((p) => p.id === selectedPart);
+        } else if (activeGroup !== "all") {
+          rows = rows.filter((p) => p.group === activeGroup);
+        }
+
+        els.heading.textContent = (getVehicleLabel() || "Vehicle") + " — Store Comparison (" + rows.length + ")";
 
         let lowestSum = 0;
         const quoteLines = [getVehicleLabel() + " — Best Store Prices:"];
@@ -440,7 +540,7 @@
           lowestSum += minVal;
           quoteLines.push("- " + part.name + ": " + fmt(minVal) + " (" + bestStore.label + ")");
 
-          function cellHtml(storeKey, priceVal) {
+          function cellHtml(priceVal) {
             const isBest = priceVal === minVal;
             return '<td class="' + (isBest ? "best-cell" : "") + '"><span class="price">' + fmt(priceVal) + '</span>' +
               (isBest ? '<span class="badge-best">Lowest</span>' : "") + "</td>";
@@ -449,9 +549,9 @@
           return (
             "<tr>" +
             "<td><strong>" + part.name + "</strong></td>" +
-            cellHtml("autozone", part.prices.autozone) +
-            cellHtml("oreilly", part.prices.oreilly) +
-            cellHtml("advance", part.prices.advance) +
+            cellHtml(part.prices.autozone) +
+            cellHtml(part.prices.oreilly) +
+            cellHtml(part.prices.advance) +
             '<td><div class="store-links">' +
             '<a href="' + buildStoreUrl("autozone", part.searchTerm) + '" target="_blank" rel="noopener noreferrer">AutoZone</a>' +
             '<a href="' + buildStoreUrl("oreilly", part.searchTerm) + '" target="_blank" rel="noopener noreferrer">O\'Reilly</a>' +
@@ -470,7 +570,8 @@
           model: els.model.value,
           engine: els.engine.value,
           vin: els.vin.value,
-          filter: els.filter.value
+          filter: els.filter.value,
+          group: activeGroup
         }));
       }
 
@@ -487,53 +588,4 @@
         });
       });
 
-      els.form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        renderComparison();
-        els.status.textContent = "Updated comparison for " + getVehicleLabel() + ".";
-      });
-
-      els.filter.addEventListener("change", renderComparison);
-
-      els.copyBtn.addEventListener("click", () => {
-        const text = els.copyBtn.dataset.quote || "";
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(() => {
-            els.status.textContent = "Copied best-price quote to clipboard.";
-          }).catch(() => {
-            els.status.textContent = "Copy unavailable in this browser context.";
-          });
-        } else {
-          els.status.textContent = "Copy unavailable in this browser context.";
-        }
-      });
-
-      els.resetBtn.addEventListener("click", () => {
-        els.year.value = "2011";
-        els.make.value = "Jeep";
-        els.model.value = "Compass";
-        els.engine.value = "2.4L 4-Cyl";
-        els.vin.value = "";
-        els.filter.value = "all";
-        renderComparison();
-        els.status.textContent = "Reset vehicle fields.";
-      });
-
-      const saved = safeGet("jobline_car_lookup");
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          if (parsed.year) els.year.value = parsed.year;
-          if (parsed.make) els.make.value = parsed.make;
-          if (parsed.model) els.model.value = parsed.model;
-          if (parsed.engine !== undefined) els.engine.value = parsed.engine;
-          if (parsed.vin !== undefined) els.vin.value = parsed.vin;
-          if (parsed.filter) els.filter.value = parsed.filter;
-        } catch (e) {}
-      }
-
-      renderComparison();
-    })();
-  </script>
-</body>
-</html>
+      document
