@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vehicle Lookup & Parts Price Comparison</title>
+  <title>Parts Price Comparison</title>
   <style>
     :root {
       --bg: #0b0f17;
@@ -65,9 +65,9 @@
       font-size: 0.92rem;
     }
 
-    .form-grid {
+    .controls-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 12px;
     }
 
@@ -238,69 +238,50 @@
 </head>
 <body>
   <div class="wrap">
-    <section class="panel" id="vehicle-part-lookup" aria-label="Vehicle Info and Parts Price Lookup">
+    <section class="panel" id="part-lookup" aria-label="Parts Price Lookup">
       <div class="header-row">
         <div>
-          <h1>Vehicle Info &amp; Parts Price Comparison</h1>
-          <p class="sub">Fill car details and filter by part across AutoZone, O'Reilly Auto Parts, and Advance Auto Parts.</p>
+          <h1>Parts Price Comparison</h1>
+          <p class="sub">Compare part prices across AutoZone, O'Reilly Auto Parts, and Advance Auto Parts.</p>
         </div>
       </div>
 
-      <form id="vehicle-form">
-        <div class="form-grid">
-          <label>
-            Year
-            <input type="number" id="car-year" min="1970" max="2027" placeholder="e.g., 2011" required />
-          </label>
-          <label>
-            Make
-            <input type="text" id="car-make" placeholder="e.g., Jeep" required />
-          </label>
-          <label>
-            Model
-            <input type="text" id="car-model" placeholder="e.g., Compass" required />
-          </label>
-          <label>
-            Engine
-            <input type="text" id="car-engine" placeholder="e.g., 2.4L 4-Cyl" />
-          </label>
-          <label>
-            VIN (Optional)
-            <input type="text" id="car-vin" maxlength="17" placeholder="17-character VIN" />
-          </label>
-          <label>
-            Part Filter
-            <select id="part-filter">
-              <option value="all">All Parts</option>
-              <option value="battery">AGM / Car Battery</option>
-              <option value="alternator">Alternator</option>
-              <option value="starter">Starter Motor</option>
-              <option value="belt">Serpentine Belt</option>
-              <option value="waterpump">Water Pump</option>
-              <option value="thermostat">Thermostat &amp; Housing</option>
-              <option value="brakes">Front Brake Pads</option>
-              <option value="rotor">Front Brake Rotor</option>
-              <option value="wipers">Wiper Blades</option>
-              <option value="oil">Synthetic Oil (5 Qt)</option>
-              <option value="spark">Spark Plugs</option>
-              <option value="engine_air">Engine Air Filter</option>
-              <option value="cabin_air">Cabin Air Filter</option>
-            </select>
-          </label>
-        </div>
+      <div class="controls-grid">
+        <label>
+          Part Search
+          <input type="text" id="part-search" placeholder="Search part name (e.g., belt, battery, alternator)" />
+        </label>
+        <label>
+          Part Filter
+          <select id="part-filter">
+            <option value="all">All Parts</option>
+            <option value="battery">AGM / Car Battery</option>
+            <option value="alternator">Alternator</option>
+            <option value="starter">Starter Motor</option>
+            <option value="belt">Serpentine Belt</option>
+            <option value="waterpump">Water Pump</option>
+            <option value="thermostat">Thermostat &amp; Housing</option>
+            <option value="brakes">Front Brake Pads</option>
+            <option value="rotor">Front Brake Rotor</option>
+            <option value="wipers">Wiper Blades</option>
+            <option value="oil">Synthetic Oil (5 Qt)</option>
+            <option value="spark">Spark Plugs</option>
+            <option value="engine_air">Engine Air Filter</option>
+            <option value="cabin_air">Cabin Air Filter</option>
+          </select>
+        </label>
+      </div>
 
-        <div class="actions">
-          <button type="submit" class="primary">Compare Store Prices</button>
-          <button type="button" class="secondary" id="copy-quote-btn">Copy Best-Price Quote</button>
-          <button type="button" class="secondary" id="reset-form-btn">Clear</button>
-        </div>
-        <div class="status" id="status-msg" role="status" aria-live="polite"></div>
-      </form>
+      <div class="actions">
+        <button type="button" class="primary" id="copy-quote-btn">Copy Best-Price Quote</button>
+        <button type="button" class="secondary" id="reset-btn">Reset</button>
+      </div>
+      <div class="status" id="status-msg" role="status" aria-live="polite"></div>
     </section>
 
     <section class="panel" aria-label="Price Comparison Table">
       <div class="section-title">
-        <h2 id="results-heading" style="margin:0;font-size:1.1rem;">Vehicle — Store Comparison</h2>
+        <h2 id="results-heading" style="margin:0;font-size:1.1rem;">Store Comparison</h2>
         <span class="badge-core">Note: Core deposits or promo codes may apply</span>
       </div>
 
@@ -321,7 +302,7 @@
 
       <div class="quote-bar">
         <div class="quote-total" id="best-total-display">Lowest Combined Subtotal (Shown Items): $0.00</div>
-        <div style="font-size:0.8rem;color:var(--muted);">Verify exact part number and trim fitment before buying.</div>
+        <div style="font-size:0.8rem;color:var(--muted);">Verify exact part number and fitment before buying.</div>
       </div>
     </section>
   </div>
@@ -418,30 +399,18 @@
       ];
 
       const els = {
-        form: document.getElementById("vehicle-form"),
-        year: document.getElementById("car-year"),
-        make: document.getElementById("car-make"),
-        model: document.getElementById("car-model"),
-        engine: document.getElementById("car-engine"),
-        vin: document.getElementById("car-vin"),
+        search: document.getElementById("part-search"),
         filter: document.getElementById("part-filter"),
         body: document.getElementById("comparison-body"),
         heading: document.getElementById("results-heading"),
         total: document.getElementById("best-total-display"),
         status: document.getElementById("status-msg"),
         copyBtn: document.getElementById("copy-quote-btn"),
-        resetBtn: document.getElementById("reset-form-btn")
+        resetBtn: document.getElementById("reset-btn")
       };
 
-      function getVehicleLabel() {
-        const parts = [els.year.value.trim(), els.make.value.trim(), els.model.value.trim(), els.engine.value.trim()].filter(Boolean);
-        const vin = els.vin.value.trim().toUpperCase();
-        const base = parts.join(" ") || "Vehicle";
-        return base + (vin ? " (VIN: " + vin + ")" : "");
-      }
-
       function buildStoreUrl(store, partTerm) {
-        const q = encodeURIComponent([els.year.value.trim(), els.make.value.trim(), els.model.value.trim(), partTerm].filter(Boolean).join(" "));
+        const q = encodeURIComponent(partTerm);
         if (store === "autozone") return "https://www.autozone.com/searchresult?searchText=" + q;
         if (store === "oreilly") return "https://www.oreillyauto.com/shop/b/search?q=" + q;
         return "https://shop.advanceautoparts.com/web/SearchDisplay?searchTerm=" + q;
@@ -453,12 +422,25 @@
 
       function renderComparison() {
         const selectedPart = els.filter.value;
-        const rows = selectedPart === "all" ? PARTS_DATA : PARTS_DATA.filter((p) => p.id === selectedPart);
+        const query = els.search.value.trim().toLowerCase();
 
-        els.heading.textContent = getVehicleLabel() + " — Store Comparison (" + rows.length + ")";
+        const rows = PARTS_DATA.filter((p) => {
+          const matchesFilter = selectedPart === "all" || p.id === selectedPart;
+          const matchesSearch = !query || p.name.toLowerCase().includes(query) || p.searchTerm.toLowerCase().includes(query);
+          return matchesFilter && matchesSearch;
+        });
+
+        els.heading.textContent = "Store Comparison (" + rows.length + ")";
+
+        if (!rows.length) {
+          els.body.innerHTML = '<tr><td colspan="5" style="color:var(--muted);">No matching parts found.</td></tr>';
+          els.total.textContent = "Lowest Combined Subtotal (Shown Items): $0.00";
+          els.copyBtn.dataset.quote = "";
+          return;
+        }
 
         let lowestSum = 0;
-        const quoteLines = [getVehicleLabel() + " — Best Store Prices:"];
+        const quoteLines = ["Best Store Prices:"];
 
         els.body.innerHTML = rows.map((part) => {
           const entries = [
@@ -495,26 +477,21 @@
         els.total.textContent = "Lowest Combined Subtotal (Shown Items): " + fmt(lowestSum);
         els.copyBtn.dataset.quote = quoteLines.join("\n") + "\nLowest Total: " + fmt(lowestSum);
 
-        safeSet("jobline_car_lookup", JSON.stringify({
-          year: els.year.value,
-          make: els.make.value,
-          model: els.model.value,
-          engine: els.engine.value,
-          vin: els.vin.value,
+        safeSet("jobline_plain_parts", JSON.stringify({
+          search: els.search.value,
           filter: els.filter.value
         }));
       }
 
-      els.form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        renderComparison();
-        els.status.textContent = "Updated comparison for " + getVehicleLabel() + ".";
-      });
-
+      els.search.addEventListener("input", renderComparison);
       els.filter.addEventListener("change", renderComparison);
 
       els.copyBtn.addEventListener("click", () => {
         const text = els.copyBtn.dataset.quote || "";
+        if (!text) {
+          els.status.textContent = "Nothing to copy.";
+          return;
+        }
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(text).then(() => {
             els.status.textContent = "Copied best-price quote to clipboard.";
@@ -527,25 +504,17 @@
       });
 
       els.resetBtn.addEventListener("click", () => {
-        els.year.value = "";
-        els.make.value = "";
-        els.model.value = "";
-        els.engine.value = "";
-        els.vin.value = "";
+        els.search.value = "";
         els.filter.value = "all";
         renderComparison();
-        els.status.textContent = "Cleared vehicle fields.";
+        els.status.textContent = "Reset filters.";
       });
 
-      const saved = safeGet("jobline_car_lookup");
+      const saved = safeGet("jobline_plain_parts");
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
-          if (parsed.year !== undefined) els.year.value = parsed.year;
-          if (parsed.make !== undefined) els.make.value = parsed.make;
-          if (parsed.model !== undefined) els.model.value = parsed.model;
-          if (parsed.engine !== undefined) els.engine.value = parsed.engine;
-          if (parsed.vin !== undefined) els.vin.value = parsed.vin;
+          if (parsed.search !== undefined) els.search.value = parsed.search;
           if (parsed.filter) els.filter.value = parsed.filter;
         } catch (e) {}
       }
