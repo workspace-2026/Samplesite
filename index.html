@@ -3,3527 +3,537 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jobline Vault — Solo Trade &amp; Local Service Hub</title>
+  <title>Vehicle Lookup & Parts Price Comparison</title>
   <style>
-    /* =====================================================================
-       1. DESIGN TOKENS & INDUSTRIAL-SLATE DARK THEME
-       ===================================================================== */
     :root {
       --bg: #0b0f17;
       --surface: #111827;
-      --surface-2: #162032;
-      --surface-3: #1e293b;
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --border: rgba(148, 163, 184, 0.16);
-      --border-strong: rgba(148, 163, 184, 0.28);
+      --surface-2: #182234;
+      --border: #263349;
+      --text: #f3f6fb;
+      --muted: #9aa7bd;
       --emerald: #10b981;
-      --emerald-hover: #059669;
-      --emerald-soft: rgba(16, 185, 129, 0.14);
-      --emerald-border: rgba(16, 185, 129, 0.36);
+      --emerald-bg: rgba(16, 185, 129, 0.14);
       --amber: #f59e0b;
-      --amber-hover: #d97706;
-      --amber-soft: rgba(245, 158, 11, 0.14);
-      --amber-border: rgba(245, 158, 11, 0.36);
-      --danger: #f87171;
-      --danger-soft: rgba(248, 113, 113, 0.14);
-      --danger-border: rgba(248, 113, 113, 0.36);
-      --radius: 14px;
-      --radius-sm: 10px;
-      --shadow: 0 14px 34px rgba(0, 0, 0, 0.42);
+      --amber-bg: rgba(245, 158, 11, 0.14);
+      --blue: #38bdf8;
+      --radius: 12px;
     }
 
-    *, *::before, *::after {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg);
-      background-image:
-        radial-gradient(circle at 12% 0%, rgba(16, 185, 129, 0.11), transparent 38%),
-        radial-gradient(circle at 88% 8%, rgba(245, 158, 11, 0.09), transparent 36%);
+      padding: 24px 16px 48px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
       color: var(--text);
-      line-height: 1.55;
-      overflow-x: hidden;
-      min-height: 100vh;
+      line-height: 1.5;
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
+    .wrap {
+      max-width: 1060px;
+      margin: 0 auto;
     }
 
-    button, input, select, textarea {
-      font-family: inherit;
-      color: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    :focus-visible {
-      outline: 2px solid var(--emerald);
-      outline-offset: 2px;
-    }
-
-    /* =====================================================================
-       2. LAYOUT & TYPOGRAPHY
-       ===================================================================== */
-    .container {
-      width: min(1160px, 100% - 32px);
-      margin-inline: auto;
-    }
-
-    section {
-      padding: 64px 0;
-      border-top: 1px solid var(--border);
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 5px 11px;
-      border-radius: 999px;
-      font-size: 0.74rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      background: var(--emerald-soft);
-      color: #6ee7b7;
-      border: 1px solid var(--emerald-border);
-    }
-
-    .eyebrow-amber {
-      background: var(--amber-soft);
-      color: #fcd34d;
-      border-color: var(--amber-border);
-    }
-
-    h1 {
-      margin: 14px 0 12px;
-      font-size: clamp(2rem, 4.3vw, 3.15rem);
-      line-height: 1.1;
-      letter-spacing: -0.025em;
-    }
-
-    h2 {
-      margin: 10px 0 8px;
-      font-size: clamp(1.45rem, 2.7vw, 2.05rem);
-      line-height: 1.18;
-      letter-spacing: -0.02em;
-    }
-
-    h3 {
-      margin: 0;
-      font-size: 1.08rem;
-      line-height: 1.3;
-    }
-
-    .section-sub {
-      margin: 0 0 26px;
-      color: var(--muted);
-      max-width: 72ch;
-      font-size: 0.96rem;
-    }
-
-    .muted {
-      color: var(--muted);
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
-    }
-
-    @media (max-width: 900px) {
-      .grid-3 {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 760px) {
-      .grid-2 {
-        grid-template-columns: 1fr;
-      }
-      section {
-        padding: 48px 0;
-      }
-    }
-
-    /* =====================================================================
-       3. TOP NAVIGATION BAR
-       ===================================================================== */
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 30;
-      background: rgba(11, 15, 23, 0.88);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .topbar-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      min-height: 64px;
-      padding: 8px 0;
-      flex-wrap: wrap;
-    }
-
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 800;
-      font-size: 1.05rem;
-      letter-spacing: -0.015em;
-    }
-
-    .brand-mark {
-      width: 32px;
-      height: 32px;
-      border-radius: 9px;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(135deg, var(--emerald), #047857);
-      color: #06281e;
-      font-weight: 900;
-      font-size: 0.85rem;
-      flex-shrink: 0;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .nav-links a {
-      padding: 7px 10px;
-      border-radius: var(--radius-sm);
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #cbd5e1;
-      border: 1px solid transparent;
-      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-    }
-
-    .nav-links a:hover {
-      background: var(--surface-2);
-      color: var(--text);
-      border-color: var(--border);
-    }
-
-    /* =====================================================================
-       4. BUTTONS, CARDS, PILLS & FORM CONTROLS
-       ===================================================================== */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      padding: 10px 15px;
-      min-height: 40px;
-      border-radius: var(--radius-sm);
-      border: 1px solid transparent;
-      font-size: 0.88rem;
-      font-weight: 700;
-      line-height: 1.2;
-      transition: transform 0.12s ease, background 0.15s ease, border-color 0.15s ease;
-    }
-
-    .btn:active {
-      transform: translateY(1px);
-    }
-
-    .btn-sm {
-      padding: 7px 11px;
-      min-height: 34px;
-      font-size: 0.8rem;
-    }
-
-    .btn-emerald {
-      background: var(--emerald);
-      color: #052218;
-    }
-
-    .btn-emerald:hover {
-      background: var(--emerald-hover);
-      color: #ecfdf5;
-    }
-
-    .btn-amber {
-      background: var(--amber);
-      color: #1f1300;
-    }
-
-    .btn-amber:hover {
-      background: var(--amber-hover);
-      color: #fffbeb;
-    }
-
-    .btn-outline {
-      background: var(--surface-2);
-      color: var(--text);
-      border-color: var(--border-strong);
-    }
-
-    .btn-outline:hover {
-      background: var(--surface-3);
-      border-color: rgba(148, 163, 184, 0.45);
-    }
-
-    .btn-ghost {
-      background: transparent;
-      color: #cbd5e1;
-      border-color: var(--border);
-    }
-
-    .btn-ghost:hover {
-      background: var(--surface-2);
-      color: var(--text);
-    }
-
-    .btn-danger {
-      background: var(--danger-soft);
-      color: #fecaca;
-      border-color: var(--danger-border);
-    }
-
-    .btn-danger:hover {
-      background: rgba(248, 113, 113, 0.24);
-    }
-
-    .btn-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .card {
+    .panel {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 20px;
-      box-shadow: var(--shadow);
+      margin-bottom: 20px;
     }
 
-    .card-subtle {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 14px;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      padding: 3px 9px;
-      border-radius: 999px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      background: var(--surface-3);
-      color: #cbd5e1;
-      border: 1px solid var(--border);
-    }
-
-    .pill-emerald {
-      background: var(--emerald-soft);
-      color: #6ee7b7;
-      border-color: var(--emerald-border);
-    }
-
-    .pill-amber {
-      background: var(--amber-soft);
-      color: #fcd34d;
-      border-color: var(--amber-border);
-    }
-
-    .field {
-      margin-bottom: 12px;
-    }
-
-    .field label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: #cbd5e1;
-      margin-bottom: 5px;
-    }
-
-    .field input,
-    .field select,
-    .field textarea {
-      width: 100%;
-      padding: 9px 11px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-strong);
-      background: var(--surface-2);
-      color: var(--text);
-      font-size: 0.88rem;
-    }
-
-    .field textarea {
-      min-height: 76px;
-      resize: vertical;
-    }
-
-    .feedback-note {
-      margin-top: 8px;
-      font-size: 0.82rem;
-      color: #6ee7b7;
-      min-height: 18px;
-    }
-
-    /* =====================================================================
-       5. HERO SECTION
-       ===================================================================== */
-    .hero {
-      padding: 54px 0 58px;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
-      gap: 22px;
-      align-items: stretch;
-    }
-
-    @media (max-width: 880px) {
-      .hero-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .hero-lead {
-      color: #cbd5e1;
-      font-size: 1rem;
-      max-width: 60ch;
-      margin: 0 0 22px;
-    }
-
-    .hero-panel {
+    .header-row {
       display: flex;
-      flex-direction: column;
+      flex-wrap: wrap;
       justify-content: space-between;
-      gap: 14px;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
     }
 
-    .stat-box {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 12px 14px;
+    h1 {
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 700;
     }
 
-    .stat-value {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: var(--emerald);
-    }
-
-    .stat-label {
-      font-size: 0.78rem;
+    .sub {
+      margin: 4px 0 0;
       color: var(--muted);
+      font-size: 0.92rem;
     }
 
-    /* =====================================================================
-       6. STARTER KITS & MONTHLY DROP EXPLORER
-       ===================================================================== */
-    .kit-card {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 14px;
-    }
-
-    .kit-meta {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .kit-steps {
-      margin: 10px 0 0;
-      padding-left: 18px;
-      color: #cbd5e1;
-      font-size: 0.85rem;
-    }
-
-    .kit-steps li + li {
-      margin-top: 5px;
-    }
-
-    .filter-row {
+    .presets {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
-    .filter-pill {
-      padding: 6px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--border-strong);
+    .chip {
       background: var(--surface-2);
-      color: #cbd5e1;
-      font-size: 0.8rem;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+
+    .chip:hover {
+      border-color: var(--emerald);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    input, select {
+      width: 100%;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 0.92rem;
+    }
+
+    input:focus, select:focus {
+      outline: 2px solid var(--emerald);
+      outline-offset: 1px;
+      border-color: var(--emerald);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    button.primary {
+      background: var(--emerald);
+      color: #062118;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    button.secondary:hover {
+      border-color: var(--amber);
+    }
+
+    .status {
+      margin-top: 12px;
+      font-size: 0.84rem;
+      color: var(--emerald);
+      min-height: 1.2em;
+    }
+
+    .section-title {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 14px;
+      font-size: 1.1rem;
+    }
+
+    .badge-best {
+      background: var(--emerald-bg);
+      color: var(--emerald);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      margin-left: 6px;
+    }
+
+    .badge-core {
+      background: var(--amber-bg);
+      color: var(--amber);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.74rem;
       font-weight: 700;
     }
 
-    .filter-pill.active {
-      background: var(--emerald-soft);
-      border-color: var(--emerald-border);
-      color: #6ee7b7;
+    .table-wrap {
+      overflow-x: auto;
     }
 
-    .drop-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 12px;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
     }
 
-    /* =====================================================================
-       7. QUOTE BUILDER
-       ===================================================================== */
-    .quote-summary-box {
-      background: var(--surface-2);
-      border: 1px solid var(--border-strong);
-      border-radius: var(--radius-sm);
-      padding: 14px;
-      margin-bottom: 14px;
-    }
-
-    .quote-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 0;
+    th, td {
+      text-align: left;
+      padding: 12px;
       border-bottom: 1px solid var(--border);
       font-size: 0.88rem;
+      vertical-align: top;
     }
 
-    .quote-row:last-child {
-      border-bottom: none;
+    th {
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
 
-    .quote-row.total {
-      padding-top: 10px;
-      font-size: 1.05rem;
-      font-weight: 800;
-      color: var(--emerald);
+    .price {
+      font-weight: 700;
+      font-size: 0.98rem;
     }
 
-    .toggle-inline {
+    .best-cell {
+      background: rgba(16, 185, 129, 0.07);
+    }
+
+    .store-links {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 10px 12px;
-      border-radius: var(--radius-sm);
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      margin-bottom: 12px;
-      font-size: 0.84rem;
-    }
-
-    /* =====================================================================
-       8. SCHEDULING & BOOKINGS
-       ===================================================================== */
-    .slot-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      flex-wrap: wrap;
       gap: 8px;
       margin-top: 6px;
     }
 
-    @media (max-width: 520px) {
-      .slot-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+    .store-links a {
+      color: var(--blue);
+      text-decoration: none;
+      font-size: 0.78rem;
     }
 
-    .slot-btn {
-      padding: 8px 10px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-strong);
-      background: var(--surface-2);
-      color: #e2e8f0;
-      font-size: 0.8rem;
-      font-weight: 700;
-      text-align: center;
+    .store-links a:hover {
+      text-decoration: underline;
     }
 
-    .slot-btn.selected {
-      background: var(--emerald-soft);
-      border-color: var(--emerald-border);
-      color: #6ee7b7;
-    }
-
-    .booking-item {
-      background: var(--surface-2);
-      border: 1px solid var(--border-strong);
-      border-radius: var(--radius-sm);
-      padding: 13px;
-      margin-bottom: 10px;
-    }
-
-    .booking-head {
+    .quote-bar {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
-      align-items: flex-start;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-
-    /* =====================================================================
-       9. CONTACTS DIRECTORY
-       ===================================================================== */
-    .contacts-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: center;
       gap: 12px;
-      margin-top: 14px;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
     }
 
-    @media (max-width: 640px) {
-      .contacts-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .contact-card {
-      background: var(--surface-2);
-      border: 1px solid var(--border-strong);
-      border-radius: var(--radius-sm);
-      padding: 13px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .contact-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .contact-avatar {
-      width: 34px;
-      height: 34px;
-      border-radius: 9px;
-      display: grid;
-      place-items: center;
-      background: var(--emerald-soft);
-      color: #6ee7b7;
-      border: 1px solid var(--emerald-border);
-      font-size: 0.8rem;
-      font-weight: 800;
-      flex-shrink: 0;
-    }
-
-    /* =====================================================================
-       10. PREVIEW MODAL & PHOTO LIGHTBOX
-       ===================================================================== */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 60;
-      background: rgba(2, 6, 14, 0.78);
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
-
-    .modal-backdrop[hidden] {
-      display: none;
-    }
-
-    .modal-card {
-      width: min(640px, 100%);
-      max-height: 86vh;
-      overflow-y: auto;
-      background: var(--surface);
-      border: 1px solid var(--border-strong);
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: var(--shadow);
-    }
-
-    .checklist-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 9px 10px;
-      border-radius: var(--radius-sm);
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      margin-bottom: 8px;
-      font-size: 0.88rem;
-    }
-
-    .checklist-item input[type="checkbox"] {
-      margin-top: 3px;
-      accent-color: var(--emerald);
-      width: 16px;
-      height: 16px;
-      flex-shrink: 0;
-    }
-
-    .checklist-item.done span {
-      text-decoration: line-through;
-      color: var(--muted);
-    }
-
-    .lightbox-img {
-      max-width: 100%;
-      max-height: 72vh;
-      border-radius: var(--radius-sm);
-      display: block;
-      margin: 0 auto;
-    }
-
-    /* =====================================================================
-       11. FLOATING CUSTOMER CHAT WIDGET
-       ===================================================================== */
-    .chat-launcher {
-      position: fixed;
-      right: 20px;
-      bottom: 20px;
-      z-index: 45;
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      padding: 12px 16px;
-      border-radius: 999px;
-      background: var(--emerald);
-      color: #052218;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      font-weight: 800;
-      font-size: 0.88rem;
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
-    }
-
-    .chat-launcher:hover {
-      background: var(--emerald-hover);
-      color: #ecfdf5;
-    }
-
-    .unread-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 20px;
-      height: 20px;
-      padding: 0 6px;
-      border-radius: 999px;
-      background: var(--amber);
-      color: #1f1300;
-      font-size: 0.72rem;
-      font-weight: 900;
-    }
-
-    .unread-badge[hidden] {
-      display: none;
-    }
-
-    .chat-drawer {
-      position: fixed;
-      right: 20px;
-      bottom: 76px;
-      z-index: 50;
-      width: min(410px, calc(100vw - 24px));
-      max-height: min(680px, calc(100vh - 96px));
-      display: flex;
-      flex-direction: column;
-      background: var(--surface);
-      border: 1px solid var(--border-strong);
-      border-radius: var(--radius);
-      box-shadow: 0 22px 50px rgba(0, 0, 0, 0.65);
-      overflow: hidden;
-    }
-
-    .chat-drawer[hidden] {
-      display: none;
-    }
-
-    .chat-header {
-      padding: 12px 14px;
-      background: var(--surface-2);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .chat-thread-bar {
-      padding: 8px 12px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      overflow-x: auto;
-      background: rgba(11, 15, 23, 0.45);
-    }
-
-    .chat-phone-bar {
-      padding: 7px 12px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(245, 158, 11, 0.06);
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-      font-size: 0.75rem;
-    }
-
-    .chat-phone-edit-row {
-      display: flex;
-      gap: 5px;
-      width: 100%;
-      margin-top: 4px;
-    }
-
-    .chat-phone-edit-row input {
-      flex: 1;
-      padding: 4px 8px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-strong);
-      background: var(--surface);
-      font-size: 0.76rem;
-    }
-
-    .chat-contact-meta-bar {
-      padding: 7px 12px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(245, 158, 11, 0.06);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 0.75rem;
-    }
-
-    .chat-contact-meta-top {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-    }
-
-    .chat-contact-edit-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 5px;
-      width: 100%;
-    }
-
-    .chat-contact-edit-grid input {
-      width: 100%;
-      padding: 4px 8px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border-strong);
-      background: var(--surface);
-      font-size: 0.75rem;
-    }
-
-    .thread-chip {
-      padding: 5px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border-strong);
-      background: var(--surface-2);
-      color: #cbd5e1;
-      font-size: 0.76rem;
+    .quote-total {
+      font-size: 1rem;
       font-weight: 700;
-      white-space: nowrap;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .thread-chip.active {
-      background: var(--emerald-soft);
-      border-color: var(--emerald-border);
-      color: #6ee7b7;
-    }
-
-    .chat-search-row {
-      padding: 8px 12px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-
-    .chat-search-row input {
-      flex: 1;
-      padding: 6px 9px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: var(--surface-2);
-      font-size: 0.8rem;
-    }
-
-    .photo-perm-bar {
-      padding: 8px 12px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(16, 185, 129, 0.06);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      font-size: 0.76rem;
-    }
-
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
-      min-height: 170px;
-    }
-
-    .msg-bubble {
-      max-width: 86%;
-      padding: 9px 11px;
-      border-radius: 12px;
-      font-size: 0.84rem;
-      line-height: 1.42;
-      word-break: break-word;
-    }
-
-    .msg-host {
-      align-self: flex-end;
-      background: var(--emerald-soft);
-      border: 1px solid var(--emerald-border);
-      color: #ecfdf5;
-    }
-
-    .msg-customer {
-      align-self: flex-start;
-      background: var(--surface-2);
-      border: 1px solid var(--border-strong);
-      color: #f1f5f9;
-    }
-
-    .msg-meta {
-      font-size: 0.69rem;
-      color: var(--muted);
-      margin-bottom: 3px;
-      font-weight: 700;
-    }
-
-    .msg-photo-thumb {
-      margin-top: 7px;
-      max-width: 190px;
-      max-height: 130px;
-      border-radius: 8px;
-      border: 1px solid var(--border-strong);
-      display: block;
-      cursor: pointer;
-    }
-
-    .typing-indicator {
-      padding: 0 12px 6px;
-      font-size: 0.75rem;
-      color: #fcd34d;
-      font-style: italic;
-    }
-
-    .typing-indicator[hidden] {
-      display: none;
-    }
-
-    .quick-replies {
-      padding: 6px 12px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      gap: 6px;
-      overflow-x: auto;
-    }
-
-    .quick-chip {
-      padding: 4px 8px;
-      border-radius: 999px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      color: #cbd5e1;
-      font-size: 0.72rem;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    .quick-chip:hover {
-      border-color: var(--amber-border);
-      color: #fcd34d;
-    }
-
-    .chat-composer {
-      padding: 10px 12px 12px;
-      border-top: 1px solid var(--border);
-      background: var(--surface-2);
-    }
-
-    .chat-composer.drag-over {
-      outline: 2px dashed var(--emerald);
-      outline-offset: -4px;
-      background: rgba(16, 185, 129, 0.12);
-    }
-
-    .pending-photo-strip {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      padding: 6px 8px;
-      margin-bottom: 8px;
-      border-radius: var(--radius-sm);
-      background: var(--surface);
-      border: 1px solid var(--emerald-border);
-      font-size: 0.76rem;
-    }
-
-    .pending-photo-strip[hidden] {
-      display: none;
-    }
-
-    .pending-thumb {
-      width: 36px;
-      height: 36px;
-      object-fit: cover;
-      border-radius: 6px;
-    }
-
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 26px 0 96px;
-      color: var(--muted);
-      font-size: 0.84rem;
-    }
-
-    .footer-inner {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+      color: var(--emerald);
     }
   </style>
 </head>
 <body>
-  <!-- =====================================================================
-       1. TOP NAVIGATION BAR
-       ===================================================================== -->
-  <header class="topbar">
-    <div class="container topbar-inner">
-      <a href="#top" class="brand">
-        <span class="brand-mark" aria-hidden="true">JV</span>
-        <span>Jobline Vault</span>
-      </a>
-      <nav class="nav-links" aria-label="Primary Navigation">
-        <a href="#starter-kits">Starter Kits</a>
-        <a href="#monthly-drops">Monthly Drops</a>
-        <a href="#quote-builder">Quote Builder</a>
-        <a href="#scheduling-booking">Scheduling</a>
-        <a href="#contacts">Contacts</a>
-        <button type="button" id="nav-open-chat-btn" class="btn btn-emerald btn-sm">Open Chat</button>
-      </nav>
-    </div>
-  </header>
-
-  <main id="top">
-    <!-- ===================================================================
-         2. HERO SECTION
-         =================================================================== -->
-    <section class="hero" style="border-top: none;">
-      <div class="container hero-grid">
+  <div class="wrap">
+    <section class="panel" id="vehicle-part-lookup" aria-label="Vehicle Info and Parts Price Lookup">
+      <div class="header-row">
         <div>
-          <span class="eyebrow">Solo Trade &amp; Local Service Workspace</span>
-          <h1>Run every local job with clear quotes, fast bookings, and direct customer chat.</h1>
-          <p class="hero-lead">
-            Jobline Vault gives local trade and service pros ready-to-use job checklists, quick estimate math, email-ready appointment booking, a searchable client directory, and a floating chat drawer with photo sharing.
-          </p>
-          <div class="btn-row">
-            <a href="#quote-builder" class="btn btn-emerald">Build a Job Quote</a>
-            <a href="#scheduling-booking" class="btn btn-amber">Schedule Booking</a>
-            <a href="#starter-kits" class="btn btn-outline">Browse Starter Kits</a>
-          </div>
+          <h1>Vehicle Info &amp; Parts Price Comparison</h1>
+          <p class="sub">Enter car details to compare sample part prices and open direct searches for AutoZone, O'Reilly Auto Parts, and Advance Auto Parts.</p>
+        </div>
+      </div>
+
+      <div class="presets" aria-label="Quick vehicle presets">
+        <button type="button" class="chip" data-preset="2011|Jeep|Compass|2.4L 4-Cyl|1C4NJDBB1BD123456">2011 Jeep Compass 2.4L</button>
+        <button type="button" class="chip" data-preset="2013|Mercedes-Benz|GL450|4.6L V8|4JGDF7CE6DA123456">2013 Mercedes-Benz GL450</button>
+        <button type="button" class="chip" data-preset="2009|Ford|Fusion|2.5L 4-Cyl|3FAHP07Z79R123456">2009 Ford Fusion 2.5L</button>
+      </div>
+
+      <form id="vehicle-form">
+        <div class="form-grid">
+          <label>
+            Year
+            <input type="number" id="car-year" min="1970" max="2027" value="2011" required />
+          </label>
+          <label>
+            Make
+            <input type="text" id="car-make" value="Jeep" required />
+          </label>
+          <label>
+            Model
+            <input type="text" id="car-model" value="Compass" required />
+          </label>
+          <label>
+            Engine
+            <input type="text" id="car-engine" value="2.4L 4-Cyl" placeholder="e.g., 2.4L 4-Cyl" />
+          </label>
+          <label>
+            VIN (Optional)
+            <input type="text" id="car-vin" maxlength="17" placeholder="17-character VIN" />
+          </label>
+          <label>
+            Part Filter
+            <select id="part-filter">
+              <option value="all">All Common Parts</option>
+              <option value="battery">AGM / Car Battery</option>
+              <option value="oil">Synthetic Oil &amp; Filter</option>
+              <option value="spark">Spark Plugs</option>
+              <option value="brakes">Front Brake Pads</option>
+              <option value="wipers">Wiper Blades</option>
+            </select>
+          </label>
         </div>
 
-        <aside class="card hero-panel" aria-label="Workspace Highlights">
-          <div>
-            <span class="eyebrow eyebrow-amber">Day-1 Field Readiness</span>
-            <h3 style="margin-top: 10px;">Everything a solo pro needs between job sites</h3>
-            <p class="muted" style="font-size: 0.86rem; margin-top: 6px; margin-bottom: 0;">
-              Check off walkthrough steps, calculate labor and materials on the spot, lock in arrival times, and review job-site photos in chat.
-            </p>
-          </div>
-          <div class="grid-2" style="gap: 10px;">
-            <div class="stat-box">
-              <div class="stat-value">3 Kits + 6 Drops</div>
-              <div class="stat-label">Interactive checklists &amp; templates</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-value">Live Chat + Photos</div>
-              <div class="stat-label">Permission-gated site photo sharing</div>
-            </div>
-          </div>
-        </aside>
-      </div>
+        <div class="actions">
+          <button type="submit" class="primary">Compare Store Prices</button>
+          <button type="button" class="secondary" id="copy-quote-btn">Copy Best-Price Quote</button>
+          <button type="button" class="secondary" id="reset-form-btn">Reset</button>
+        </div>
+        <div class="status" id="status-msg" role="status" aria-live="polite"></div>
+      </form>
     </section>
 
-    <!-- ===================================================================
-         3. DAY-1 STARTER KITS & MONTHLY DROP EXPLORER
-         =================================================================== -->
-    <section id="starter-kits">
-      <div class="container">
-        <span class="eyebrow">Day-1 Starter Kits</span>
-        <h2>Practical field playbooks ready from minute one</h2>
-        <p class="section-sub">
-          Open any starter kit to check off steps interactively or copy the checklist straight into your notes or customer message.
-        </p>
+    <section class="panel" aria-label="Price Comparison Table">
+      <div class="section-title">
+        <h2 id="results-heading" style="margin:0;font-size:1.1rem;">2011 Jeep Compass 2.4L — Store Comparison</h2>
+        <span class="badge-core">Note: Core charges or promo codes may apply at checkout</span>
+      </div>
 
-        <div id="starter-kits-grid" class="grid-3"></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Part Category</th>
+              <th>AutoZone</th>
+              <th>O'Reilly Auto Parts</th>
+              <th>Advance Auto Parts</th>
+              <th>Quick Store Search</th>
+            </tr>
+          </thead>
+          <tbody id="comparison-body"></tbody>
+        </table>
+      </div>
+
+      <div class="quote-bar">
+        <div class="quote-total" id="best-total-display">Lowest Combined Subtotal (Shown Items): $0.00</div>
+        <div style="font-size:0.8rem;color:var(--muted);">Always verify exact fitment by VIN or trim before purchase.</div>
       </div>
     </section>
-
-    <section id="monthly-drops">
-      <div class="container">
-        <span class="eyebrow eyebrow-amber">Monthly Drop Explorer</span>
-        <h2>Seasonal &amp; trade-specific resource drops</h2>
-        <p class="section-sub">
-          Filter drops by category to pull up targeted prep steps, follow-up scripts, or maintenance checklists.
-        </p>
-
-        <div class="filter-row" role="group" aria-label="Filter Monthly Drops by Category">
-          <button type="button" class="filter-pill active" data-drop-category="all">All Drops</button>
-          <button type="button" class="filter-pill" data-drop-category="Maintenance">Maintenance</button>
-          <button type="button" class="filter-pill" data-drop-category="Estimates">Estimates</button>
-          <button type="button" class="filter-pill" data-drop-category="Customer Care">Customer Care</button>
-        </div>
-
-        <div id="monthly-drops-grid" class="grid-3"></div>
-      </div>
-    </section>
-
-    <!-- ===================================================================
-         4. INTERACTIVE JOB ESTIMATE & QUOTE BUILDER
-         =================================================================== -->
-    <section id="quote-builder">
-      <div class="container">
-        <span class="eyebrow">Estimate Calculator</span>
-        <h2>Interactive Job Estimate &amp; Quote Builder</h2>
-        <p class="section-sub">
-          Pick a trade preset or customize labor hours, hourly rate, and material costs to generate a clean client-ready quote summary.
-        </p>
-
-        <div class="grid-2">
-          <article class="card">
-            <div class="field">
-              <label for="quote-preset">Trade / Service Preset</label>
-              <select id="quote-preset">
-                <option value="custom">Custom Job Estimate</option>
-                <option value="plumbing">Faucet &amp; P-Trap Service (2 hrs @ $95/hr + $45 mat)</option>
-                <option value="electrical">GFCI Outlet &amp; Fixture Swap (1.5 hrs @ $105/hr + $38 mat)</option>
-                <option value="handyman">Door Alignment &amp; Weatherstrip (2.5 hrs @ $80/hr + $30 mat)</option>
-                <option value="seasonal">Gutter &amp; Exterior Tune-Up (3 hrs @ $85/hr + $20 mat)</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label for="quote-job-title">Job Description</label>
-              <input id="quote-job-title" type="text" value="Kitchen Faucet Replacement &amp; Supply Line Check" />
-            </div>
-
-            <div class="grid-2" style="gap: 10px;">
-              <div class="field">
-                <label for="quote-hours">Labor Hours</label>
-                <input id="quote-hours" type="number" min="0" max="200" step="0.5" value="2" />
-              </div>
-              <div class="field">
-                <label for="quote-rate">Hourly Rate ($)</label>
-                <input id="quote-rate" type="number" min="0" max="1000" step="5" value="95" />
-              </div>
-            </div>
-
-            <div class="grid-2" style="gap: 10px;">
-              <div class="field">
-                <label for="quote-materials">Materials Cost ($)</label>
-                <input id="quote-materials" type="number" min="0" max="50000" step="1" value="45" />
-              </div>
-              <div class="field">
-                <label for="quote-discount">Discount ($)</label>
-                <input id="quote-discount" type="number" min="0" max="10000" step="1" value="0" />
-              </div>
-            </div>
-
-            <div class="toggle-inline">
-              <div>
-                <strong>Include Tax (8.25%)</strong>
-                <div class="muted" style="font-size: 0.76rem;">Applies to labor + materials before discount</div>
-              </div>
-              <input id="quote-tax-toggle" type="checkbox" style="width: 18px; height: 18px; accent-color: var(--emerald);" />
-            </div>
-          </article>
-
-          <article class="card">
-            <span class="eyebrow eyebrow-amber">Live Breakdown</span>
-            <h3 style="margin-top: 10px; margin-bottom: 12px;">Estimate Summary</h3>
-
-            <div class="quote-summary-box">
-              <div class="quote-row">
-                <span class="muted">Labor</span>
-                <strong id="quote-labor-out">$190.00</strong>
-              </div>
-              <div class="quote-row">
-                <span class="muted">Materials</span>
-                <strong id="quote-materials-out">$45.00</strong>
-              </div>
-              <div class="quote-row">
-                <span class="muted">Tax (8.25%)</span>
-                <strong id="quote-tax-out">$0.00</strong>
-              </div>
-              <div class="quote-row">
-                <span class="muted">Discount</span>
-                <strong id="quote-discount-out">-$0.00</strong>
-              </div>
-              <div class="quote-row total">
-                <span>Estimated Total</span>
-                <span id="quote-total-out">$235.00</span>
-              </div>
-            </div>
-
-            <div class="btn-row">
-              <button type="button" id="copy-quote-btn" class="btn btn-emerald">Copy Quote Summary</button>
-              <button type="button" id="post-quote-chat-btn" class="btn btn-outline">Send to Chat</button>
-            </div>
-            <div id="quote-feedback" class="feedback-note" role="status" aria-live="polite"></div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===================================================================
-         5. EMAIL BOOKING & SCHEDULING
-         =================================================================== -->
-    <section id="scheduling-booking">
-      <div class="container">
-        <span class="eyebrow">Appointments &amp; Mailto</span>
-        <h2>Email Booking &amp; Scheduling</h2>
-        <p class="section-sub">
-          Lock in a date and local time slot, fill customer details from your contacts or type them manually, save to your schedule, and open a pre-filled email invite.
-        </p>
-
-        <div class="grid-2">
-          <article class="card">
-            <form id="booking-form" novalidate>
-              <div class="field">
-                <label for="booking-host-email">Your Host Email (for booking confirmations)</label>
-                <input id="booking-host-email" type="email" value="dispatch@joblinevault.local" placeholder="you@business.com" required />
-              </div>
-
-              <div class="grid-2" style="gap: 10px;">
-                <div class="field">
-                  <label for="booking-host-email">Your Host Email (for booking confirmations)</label>
-                  <input id="booking-host-email" type="email" value="dispatch@joblinevault.local" placeholder="you@business.com" required />
-                </div>
-                <div class="field">
-                  <label for="booking-host-phone">Host / Dispatch Phone Number</label>
-                  <input id="booking-host-phone" type="tel" value="(312) 555-0100" placeholder="e.g., 708-555-0194 or +1 312 555 0100" />
-                </div>
-              </div>
-
-              <div class="grid-2" style="gap: 10px;">
-                <div class="field">
-                  <label for="booking-service">Service / Session Type</label>
-                  <select id="booking-service">
-                    <option value="On-Site Estimate & Walkthrough">On-Site Estimate &amp; Walkthrough</option>
-                    <option value="Standard Repair / Service Call">Standard Repair / Service Call</option>
-                    <option value="Seasonal Maintenance Check">Seasonal Maintenance Check</option>
-                    <option value="15-Min Phone / Photo Triage">15-Min Phone / Photo Triage</option>
-                  </select>
-                </div>
-
-                <div class="field">
-                  <label for="booking-date">Preferred Date</label>
-                  <input id="booking-date" type="date" required />
-                </div>
-              </div>
-
-              <div class="field">
-                <label>
-                  Time Slot (<span id="local-tz-label">Local Time</span>)
-                </label>
-                <div class="slot-grid" id="booking-slots" role="group" aria-label="Available Time Slots">
-                  <button type="button" class="slot-btn selected" data-slot="08:30 AM">08:30 AM</button>
-                  <button type="button" class="slot-btn" data-slot="10:30 AM">10:30 AM</button>
-                  <button type="button" class="slot-btn" data-slot="01:00 PM">01:00 PM</button>
-                  <button type="button" class="slot-btn" data-slot="02:30 PM">02:30 PM</button>
-                  <button type="button" class="slot-btn" data-slot="04:00 PM">04:00 PM</button>
-                  <button type="button" class="slot-btn" data-slot="05:30 PM">05:30 PM</button>
-                </div>
-              </div>
-
-              <div class="field">
-                <label for="booking-contact-picker">Load from Saved Contacts (Optional)</label>
-                <select id="booking-contact-picker">
-                  <option value="">-- Choose a saved contact --</option>
-                </select>
-              </div>
-
-              <div class="grid-2" style="gap: 10px;">
-                <div class="field">
-                  <label for="booking-customer-name">Customer Name *</label>
-                  <input id="booking-customer-name" type="text" placeholder="e.g., Jordan Alvarez" required />
-                </div>
-                <div class="field">
-                  <label for="booking-customer-email">Customer Email</label>
-                  <input id="booking-customer-email" type="email" placeholder="jordan@example.com" />
-                </div>
-              </div>
-
-              <div class="field">
-                <label for="booking-customer-phone">Customer Phone Number (Optional)</label>
-                <input id="booking-customer-phone" type="tel" placeholder="e.g., 708-555-0194 or +1 708 555 0194" />
-              </div>
-
-              <div class="field">
-                <label for="booking-notes">Job / Access Notes</label>
-                <textarea id="booking-notes" placeholder="Gate code, parking spot, or issue details..."></textarea>
-              </div>
-
-              <div class="btn-row">
-                <button type="submit" class="btn btn-emerald">Save Booking</button>
-                <button type="button" id="copy-booking-draft-btn" class="btn btn-outline">Copy Summary</button>
-                <a id="booking-mailto-btn" href="mailto:" class="btn btn-amber">Send Email (mailto:)</a>
-              </div>
-              <div id="booking-feedback" class="feedback-note" role="status" aria-live="polite"></div>
-            </form>
-          </article>
-
-          <article class="card">
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px;">
-              <div>
-                <span class="eyebrow eyebrow-amber">Schedule Log</span>
-                <h3 style="margin-top: 8px;">Confirmed Bookings (<span id="bookings-count">0</span>)</h3>
-              </div>
-              <button type="button" id="clear-bookings-btn" class="btn btn-ghost btn-sm">Clear All</button>
-            </div>
-            <div id="bookings-list" aria-live="polite"></div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===================================================================
-         6. CONTACTS DIRECTORY & ADD CONTACT
-         =================================================================== -->
-    <section id="contacts">
-      <div class="container">
-        <span class="eyebrow">Client &amp; Trade Rolodex</span>
-        <h2>Contacts Directory &amp; Add Contact</h2>
-        <p class="section-sub">
-          Add, edit, search, and filter customers, leads, and suppliers. Jump straight into booking or chat, copy details, or export JSON/CSV.
-        </p>
-
-        <div class="grid-2">
-          <article class="card">
-            <h3 id="contact-form-title" style="margin-bottom: 12px;">Add New Contact</h3>
-            <form id="contact-form" novalidate>
-              <input type="hidden" id="contact-edit-id" value="" />
-
-              <div class="field">
-                <label for="contact-name">Full Name *</label>
-                <input id="contact-name" type="text" placeholder="e.g., Priya Nair" required />
-              </div>
-
-              <div class="grid-2" style="gap: 10px;">
-                <div class="field">
-                  <label for="contact-phone">Phone Number</label>
-                  <input id="contact-phone" type="tel" placeholder="e.g., 708-555-0194 or +1 312 555 0142" />
-                  <div class="muted" style="font-size: 0.71rem; margin-top: 4px;">
-                    Enter a phone number, email, or both.
-                  </div>
-                </div>
-                <div class="field">
-                  <label for="contact-email">Email Address</label>
-                  <input id="contact-email" type="email" placeholder="priya@example.com" />
-                </div>
-              </div>
-
-              <div class="grid-2" style="gap: 10px;">
-                <div class="field">
-                  <label for="contact-role">Role / Tag</label>
-                  <select id="contact-role">
-                    <option value="Customer">Customer</option>
-                    <option value="Lead">Lead</option>
-                    <option value="Supplier">Supplier</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label for="contact-area">Neighborhood / Note</label>
-                  <input id="contact-area" type="text" placeholder="e.g., Westside • Gate 102" />
-                </div>
-              </div>
-
-              <div class="field">
-                <label for="contact-notes">Job Notes</label>
-                <textarea id="contact-notes" placeholder="Preferred hours, past repairs, or supply notes..."></textarea>
-              </div>
-
-              <div class="btn-row">
-                <button type="submit" id="contact-save-btn" class="btn btn-emerald">Save Contact</button>
-                <button type="button" id="contact-cancel-btn" class="btn btn-ghost" hidden>Cancel Edit</button>
-              </div>
-              <div id="contact-feedback" class="feedback-note" role="status" aria-live="polite"></div>
-            </form>
-          </article>
-
-          <article class="card">
-            <div class="btn-row" style="justify-content: space-between; margin-bottom: 12px;">
-              <div>
-                <span class="eyebrow eyebrow-amber">Directory</span>
-                <h3 style="margin-top: 8px;">Saved Contacts (<span id="contacts-count">0</span>)</h3>
-              </div>
-              <div class="btn-row" style="gap: 6px;">
-                <button type="button" id="export-json-btn" class="btn btn-outline btn-sm">Export JSON</button>
-                <button type="button" id="export-csv-btn" class="btn btn-outline btn-sm">Export CSV</button>
-                <button type="button" id="reset-contacts-btn" class="btn btn-ghost btn-sm">Reset Demo</button>
-              </div>
-            </div>
-
-            <div class="field">
-              <label for="contact-search">Search Contacts</label>
-              <input id="contact-search" type="text" placeholder="Search by name, phone, email, tag, or notes..." />
-            </div>
-
-            <div class="filter-row" role="group" aria-label="Filter Contacts by Role">
-              <button type="button" class="filter-pill active" data-contact-role="all">All</button>
-              <button type="button" class="filter-pill" data-contact-role="Customer">Customer</button>
-              <button type="button" class="filter-pill" data-contact-role="Lead">Lead</button>
-              <button type="button" class="filter-pill" data-contact-role="Supplier">Supplier</button>
-            </div>
-
-            <div id="contacts-list" class="contacts-grid" aria-live="polite"></div>
-          </article>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="container footer-inner">
-      <div><strong>Jobline Vault</strong> — Solo Trade &amp; Local Service Hub</div>
-      <div class="btn-row">
-        <a href="#starter-kits">Starter Kits</a>
-        <a href="#monthly-drops">Monthly Drops</a>
-        <a href="#quote-builder">Quote Builder</a>
-        <a href="#scheduling-booking">Scheduling</a>
-        <a href="#contacts">Contacts</a>
-      </div>
-    </div>
-  </footer>
-
-  <!-- =====================================================================
-       7. FLOATING CUSTOMER CHAT LAUNCHER & DRAWER
-       ===================================================================== -->
-  <button type="button" id="floating-chat-launcher" class="chat-launcher" aria-expanded="false" aria-controls="floating-chat-drawer">
-    <span>Customer Chat</span>
-    <span id="chat-unread-badge" class="unread-badge" hidden>0</span>
-  </button>
-
-  <aside id="floating-chat-drawer" class="chat-drawer" aria-label="Floating Customer Chat" hidden>
-    <div class="chat-header">
-      <div>
-        <strong style="font-size: 0.92rem;">Customer Chat</strong>
-        <div id="chat-active-subtitle" class="muted" style="font-size: 0.72rem;">Active: Maya</div>
-      </div>
-      <div class="btn-row" style="gap: 4px;">
-        <button type="button" id="chat-simulate-btn" class="btn btn-ghost btn-sm" style="padding: 4px 8px; min-height: 28px; font-size: 0.72rem;">Simulate Reply</button>
-        <button type="button" id="chat-close-btn" class="btn btn-ghost btn-sm" style="padding: 4px 8px; min-height: 28px; font-size: 0.72rem;" aria-label="Close Chat">Close</button>
-      </div>
-    </div>
-
-    <div class="chat-thread-bar" id="chat-thread-bar" role="tablist" aria-label="Customer Conversations"></div>
-
-    <div class="chat-contact-meta-bar" id="chat-contact-meta-bar">
-      <div class="chat-contact-meta-top">
-        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-          <span class="muted">Phone:</span>
-          <strong id="chat-thread-phone-display">Not added</strong>
-          <a id="chat-thread-call-link" href="#" class="btn btn-outline btn-sm" style="padding: 2px 7px; min-height: 24px; font-size: 0.69rem;" hidden>Call</a>
-          <button type="button" id="chat-thread-copy-phone-btn" class="btn btn-ghost btn-sm" style="padding: 2px 7px; min-height: 24px; font-size: 0.69rem;" hidden>Copy #</button>
-          <span class="muted">Email:</span>
-          <strong id="chat-thread-email-display">Not added</strong>
-          <a id="chat-thread-mailto-link" href="mailto:" class="btn btn-outline btn-sm" style="padding: 2px 7px; min-height: 24px; font-size: 0.69rem;" hidden>Email</a>
-          <button type="button" id="chat-thread-copy-email-btn" class="btn btn-ghost btn-sm" style="padding: 2px 7px; min-height: 24px; font-size: 0.69rem;" hidden>Copy Email</button>
-        </div>
-        <div class="btn-row" style="gap: 4px;">
-          <button type="button" id="chat-edit-contact-info-btn" class="btn btn-ghost btn-sm" style="padding: 2px 7px; min-height: 24px; font-size: 0.69rem;">Edit Info</button>
-          <button type="button" id="chat-share-contact-info-btn" class="btn btn-amber btn-sm" style="padding: 2px 7px; min-height: 24px; font-size: 0.69rem;">Post Info</button>
-        </div>
-      </div>
-      <div id="chat-contact-edit-row" class="chat-contact-edit-grid" hidden>
-        <input id="chat-phone-edit-input" type="tel" placeholder="Phone (e.g., 708-555-0194)" aria-label="Customer thread phone number" />
-        <div style="display: flex; gap: 4px;">
-          <input id="chat-email-edit-input" type="email" placeholder="Email (e.g., maya@example.com)" aria-label="Customer thread email address" />
-          <button type="button" id="chat-contact-info-save-btn" class="btn btn-emerald btn-sm" style="padding: 3px 8px; min-height: 26px; font-size: 0.7rem;">Save</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="chat-search-row">
-      <input id="chat-search-input" type="search" placeholder="Search messages in thread..." aria-label="Search messages in thread" />
-      <button type="button" id="chat-search-clear-btn" class="btn btn-ghost btn-sm" style="padding: 4px 8px; min-height: 28px; font-size: 0.72rem;">Clear</button>
-    </div>
-
-    <div class="photo-perm-bar">
-      <div>
-        <strong id="photo-perm-status-text">Photo Access: Not Requested</strong>
-        <div class="muted" style="font-size: 0.7rem;">Approve photo access to attach job-site images</div>
-      </div>
-      <div class="btn-row" style="gap: 4px;">
-        <button type="button" id="photo-perm-request-btn" class="btn btn-emerald btn-sm" style="padding: 4px 8px; min-height: 28px; font-size: 0.72rem;">Allow Photos</button>
-        <button type="button" id="photo-perm-toggle-btn" class="btn btn-ghost btn-sm" style="padding: 4px 8px; min-height: 28px; font-size: 0.72rem;">Revoke</button>
-      </div>
-    </div>
-
-    <div id="chat-messages" class="chat-messages" aria-live="polite"></div>
-    <div id="chat-typing-indicator" class="typing-indicator" hidden>Customer is typing...</div>
-
-    <div class="quick-replies" role="group" aria-label="Quick Replies">
-      <button type="button" class="quick-chip" data-quick="On my way—ETA about 15 minutes.">On my way (15m)</button>
-      <button type="button" class="quick-chip" data-quick="Can you share a quick photo of the area?">Ask for photo</button>
-      <button type="button" class="quick-chip" data-quick="Estimate is ready—let me know if that works.">Estimate ready</button>
-    </div>
-
-    <form id="chat-composer" class="chat-composer" novalidate>
-      <div id="pending-photo-strip" class="pending-photo-strip" hidden>
-        <div style="display: flex; align-items: center; gap: 8px; min-width: 0;">
-          <img id="pending-photo-thumb" class="pending-thumb" alt="Selected photo preview" />
-          <span id="pending-photo-name" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></span>
-        </div>
-        <button type="button" id="remove-pending-photo-btn" class="btn btn-danger btn-sm" style="padding: 3px 7px; min-height: 24px; font-size: 0.7rem;">Remove</button>
-      </div>
-
-      <div class="btn-row" style="gap: 6px; margin-bottom: 8px;">
-        <button type="button" id="chat-pick-photo-btn" class="btn btn-outline btn-sm" style="padding: 4px 8px; min-height: 28px; font-size: 0.72rem;">Choose Photo</button>
-        <button type="button" id="chat-camera-photo-btn" class="btn btn-outline btn-sm" style="padding: 4px 8px; min-height: 28px; font-size: 0.72rem;">Camera</button>
-        <span class="muted" style="font-size: 0.7rem;">or drag &amp; drop image here</span>
-      </div>
-
-      <input id="chat-file-input" type="file" accept="image/*" hidden />
-      <input id="chat-camera-input" type="file" accept="image/*" capture="environment" hidden />
-
-      <div style="display: flex; gap: 6px;">
-        <input id="chat-input" type="text" placeholder="Type a message to customer..." aria-label="Type a message to customer" style="flex: 1; padding: 8px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); background: var(--surface); font-size: 0.84rem;" />
-        <button type="submit" class="btn btn-emerald btn-sm">Send</button>
-      </div>
-      <div id="chat-feedback" class="feedback-note" style="margin-top: 5px; font-size: 0.74rem;" role="status" aria-live="polite"></div>
-    </form>
-  </aside>
-
-  <!-- =====================================================================
-       8. STARTER KIT / DROP PREVIEW MODAL & PHOTO LIGHTBOX
-       ===================================================================== -->
-  <div id="kit-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="kit-modal-title" hidden>
-    <div class="modal-card">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px;">
-        <div>
-          <span id="kit-modal-badge" class="pill pill-emerald">Checklist</span>
-          <h3 id="kit-modal-title" style="margin-top: 8px;"></h3>
-        </div>
-        <button type="button" id="kit-modal-close-btn" class="btn btn-ghost btn-sm" aria-label="Close Preview">Close</button>
-      </div>
-      <p id="kit-modal-desc" class="muted" style="font-size: 0.86rem; margin-top: 0;"></p>
-      <div id="kit-modal-steps"></div>
-      <div class="btn-row" style="margin-top: 14px;">
-        <button type="button" id="kit-modal-copy-btn" class="btn btn-emerald btn-sm">Copy Checklist</button>
-        <button type="button" id="kit-modal-reset-btn" class="btn btn-outline btn-sm">Reset Checks</button>
-      </div>
-      <div id="kit-modal-feedback" class="feedback-note" role="status" aria-live="polite"></div>
-    </div>
-  </div>
-
-  <div id="photo-lightbox" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Enlarged Photo Preview" hidden>
-    <div class="modal-card" style="text-align: center;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <strong id="lightbox-caption" style="font-size: 0.88rem;">Job-Site Photo</strong>
-        <button type="button" id="lightbox-close-btn" class="btn btn-ghost btn-sm">Close</button>
-      </div>
-      <img id="lightbox-img" class="lightbox-img" alt="Enlarged job-site photo" />
-    </div>
   </div>
 
   <script>
     (function () {
-      "use strict";
-
-      /* ===================================================================
-         DEFENSIVE STORAGE & STRING HELPERS
-         =================================================================== */
-      const memoryStore = new Map();
-
-      function readStore(key) {
-        try {
-          if (window.localStorage) {
-            const val = window.localStorage.getItem(key);
-            if (val !== null) return val;
-          }
-        } catch (_err) {
-          // Fallback to memory
-        }
-        return memoryStore.has(key) ? memoryStore.get(key) : null;
+      const memoryFallback = {};
+      function safeGet(key) {
+        try { return localStorage.getItem(key); } catch (e) { return memoryFallback[key] || null; }
+      }
+      function safeSet(key, val) {
+        try { localStorage.setItem(key, val); } catch (e) { memoryFallback[key] = val; }
       }
 
-      function writeStore(key, val) {
-        try {
-          if (window.localStorage) {
-            window.localStorage.setItem(key, val);
-          }
-        } catch (_err) {
-          // Fallback to memory
-        }
-        memoryStore.set(key, val);
-      }
-
-      function safeJsonParse(raw, fallback) {
-        try {
-          if (typeof raw !== "string" || !raw) return fallback;
-          return JSON.parse(raw);
-        } catch (_err) {
-          return fallback;
-        }
-      }
-
-      function escapeHtml(value) {
-        return String(value == null ? "" : value)
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;")
-          .replace(/'/g, "&#39;");
-      }
-
-      function formatMoney(num) {
-        const safeNum = Number.isFinite(Number(num)) ? Number(num) : 0;
-        return "$" + safeNum.toFixed(2);
-      }
-
-      /* ===================================================================
-         PHONE NUMBER NORMALIZATION, VALIDATION & TEL: HELPERS
-         =================================================================== */
-      function sanitizePhoneInput(raw) {
-        return String(raw == null ? "" : raw)
-          .replace(/[^\d+\-().\s]/g, "")
-          .replace(/\s+/g, " ")
-          .trim();
-      }
-
-      function validatePhoneNumber(raw) {
-        const cleaned = sanitizePhoneInput(raw);
-        if (!cleaned) {
-          return { valid: true, normalized: "", digits: "", error: "" };
-        }
-        const plusCount = (cleaned.match(/\+/g) || []).length;
-        if (plusCount > 1 || (cleaned.includes("+") && !cleaned.startsWith("+"))) {
-          return {
-            valid: false,
-            normalized: cleaned,
-            digits: "",
-            error: "Use a single leading '+' for international numbers (e.g., +1 312 555 0142)."
-          };
-        }
-        const digits = cleaned.replace(/\D/g, "");
-        if (digits.length < 7 || digits.length > 15) {
-          return {
-            valid: false,
-            normalized: cleaned,
-            digits,
-            error: "Enter a valid phone number with 7 to 15 digits (e.g., 708-555-0194)."
-          };
-        }
-        let formatted = cleaned;
-        if (!cleaned.startsWith("+") && digits.length === 10) {
-          formatted = `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
-        } else if (!cleaned.startsWith("+") && digits.length === 7) {
-          formatted = `${digits.slice(0, 3)}-${digits.slice(3)}`;
-        }
-        return { valid: true, normalized: formatted, digits, error: "" };
-      }
-
-      function toTelHref(rawPhone) {
-        const check = validatePhoneNumber(rawPhone);
-        if (!check.valid || !check.digits) return "";
-        const prefix = String(rawPhone || "").trim().startsWith("+") ? "+" : "";
-        return "tel:" + prefix + check.digits;
-      }
-
-      /* ===================================================================
-         EMAIL VALIDATION & MAILTO HELPERS
-         =================================================================== */
-      function validateEmailAddress(rawEmail) {
-        const trimmed = String(rawEmail == null ? "" : rawEmail).trim();
-        if (!trimmed) {
-          return { valid: true, normalized: "", error: "" };
-        }
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-        if (!emailRegex.test(trimmed)) {
-          return {
-            valid: false,
-            normalized: trimmed,
-            error: "Enter a valid email address (e.g., name@example.com)."
-          };
-        }
-        return { valid: true, normalized: trimmed, error: "" };
-      }
-
-      function toMailtoHref(rawEmail, subjectText, bodyText) {
-        const check = validateEmailAddress(rawEmail);
-        if (!check.valid || !check.normalized) return "";
-        const params = [];
-        if (subjectText) params.push("subject=" + encodeURIComponent(String(subjectText)));
-        if (bodyText) params.push("body=" + encodeURIComponent(String(bodyText)));
-        return "mailto:" + encodeURIComponent(check.normalized) + (params.length ? "?" + params.join("&") : "");
-      }
-
-      function copyToClipboard(text, onDone) {
-        const value = String(text || "");
-        try {
-          if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
-            navigator.clipboard.writeText(value).then(
-              () => { if (typeof onDone === "function") onDone(true); },
-              () => fallbackCopy(value, onDone)
-            );
-            return;
-          }
-        } catch (_err) {
-          // Use fallback
-        }
-        fallbackCopy(value, onDone);
-      }
-
-      function fallbackCopy(value, onDone) {
-        let ok = false;
-        try {
-          const ta = document.createElement("textarea");
-          ta.value = value;
-          ta.setAttribute("readonly", "");
-          ta.style.position = "fixed";
-          ta.style.opacity = "0";
-          document.body.appendChild(ta);
-          ta.select();
-          ok = Boolean(document.execCommand && document.execCommand("copy"));
-          document.body.removeChild(ta);
-        } catch (_err) {
-          ok = false;
-        }
-        if (typeof onDone === "function") onDone(ok);
-      }
-
-      /* ===================================================================
-         STARTER KITS & MONTHLY DROPS DATA + MODAL CHECKLISTS
-         =================================================================== */
-      const STARTER_KITS = [
+      const PARTS_DATA = [
         {
-          id: "kit-walkthrough",
-          tag: "Starter Kit",
-          title: "On-Site Walkthrough & Scope Sheet",
-          summary: "Capture accurate measurements, shutoff locations, and customer priorities in 10 minutes.",
-          steps: [
-            "Confirm parking, gate access, and pets before unpacking tools.",
-            "Locate main water shutoff, breaker panel, or utility access points.",
-            "Take clear before photos with customer permission.",
-            "Review labor/material range and next steps before leaving."
-          ]
+          id: "battery",
+          name: "AGM Car Battery (Group H6 / 35)",
+          searchTerm: "AGM car battery",
+          prices: { autozone: 281.99, oreilly: 272.99, advance: 264.99 }
         },
         {
-          id: "kit-arrival",
-          tag: "Starter Kit",
-          title: "Arrival & Completion Handoff",
-          summary: "Keep arrival windows predictable and wrap every job with a clean handoff.",
-          steps: [
-            "Send ETA message 15–20 minutes prior to arrival.",
-            "Lay floor protection along walking path from entry to work zone.",
-            "Test operation and clean debris after completing task.",
-            "Share summary of work completed and care tips."
-          ]
+          id: "oil",
+          name: "Full Synthetic Motor Oil (5 Qt)",
+          searchTerm: "full synthetic motor oil 5 qt",
+          prices: { autozone: 34.99, oreilly: 36.49, advance: 45.99 }
         },
         {
-          id: "kit-followup",
-          tag: "Starter Kit",
-          title: "Estimate & Follow-Up Cadence",
-          summary: "Turn walk-through quotes into booked jobs without awkward chasing.",
-          steps: [
-            "Send itemized labor and material breakdown the same day.",
-            "Offer two concrete arrival windows instead of open-ended dates.",
-            "Follow up once 48 hours later with a quick availability check."
-          ]
+          id: "spark",
+          name: "Iridium / Platinum Spark Plug (Each)",
+          searchTerm: "iridium spark plug",
+          prices: { autozone: 9.99, oreilly: 10.49, advance: 8.99 }
+        },
+        {
+          id: "brakes",
+          name: "Front Brake Pads Set",
+          searchTerm: "front brake pads",
+          prices: { autozone: 34.00, oreilly: 38.00, advance: 38.00 }
+        },
+        {
+          id: "wipers",
+          name: "Beam Wiper Blade (Single)",
+          searchTerm: "wiper blade",
+          prices: { autozone: 15.00, oreilly: 10.00, advance: 16.00 }
         }
       ];
 
-      const MONTHLY_DROPS = [
-        {
-          id: "drop-seasonal-hvac",
-          category: "Maintenance",
-          title: "Seasonal Filter & Vent Check",
-          summary: "Quick inspection steps for airflow, filter sizing, and register clearance.",
-          steps: [
-            "Check filter direction arrow and note exact dimensions.",
-            "Verify supply and return vents are unobstructed.",
-            "Log filter replacement interval for next visit."
-          ]
-        },
-        {
-          id: "drop-leak-triage",
-          category: "Maintenance",
-          title: "Under-Sink & Valve Triage",
-          summary: "Spot slow drips early around supply lines, traps, and shutoff stems.",
-          steps: [
-            "Run dry paper towel along supply nuts and trap joints.",
-            "Test angle stops gently without forcing stuck valves.",
-            "Note replacement parts needed before scheduling repair."
-          ]
-        },
-        {
-          id: "drop-change-order",
-          category: "Estimates",
-          title: "Mid-Job Scope Update Script",
-          summary: "Communicate hidden conditions clearly before doing extra work.",
-          steps: [
-            "Pause work safely and document what changed.",
-            "Explain added time/materials in plain language.",
-            "Get customer approval before proceeding."
-          ]
-        },
-        {
-          id: "drop-bundle-quote",
-          category: "Estimates",
-          title: "Multi-Task Visit Bundler",
-          summary: "Group small fixes into one trip to save drive time and fees.",
-          steps: [
-            "List primary repair plus up to two quick add-ons.",
-            "Show combined labor hours and material total clearly.",
-            "Confirm priority order if budget needs trimming."
-          ]
-        },
-        {
-          id: "drop-photo-request",
-          category: "Customer Care",
-          title: "Pre-Visit Photo Request Guide",
-          summary: "Get helpful context photos without overwhelming non-technical clients.",
-          steps: [
-            "Ask for one wide shot showing surrounding space.",
-            "Ask for one close-up of label, model tag, or problem spot.",
-            "Remind customer to only share photos they are comfortable sending."
-          ]
-        },
-        {
-          id: "drop-repeat-check",
-          category: "Customer Care",
-          title: "30-Day Check-In Note",
-          summary: "Friendly post-job check-in that builds repeat local referrals.",
-          steps: [
-            "Check in after 30 days to confirm everything runs smoothly.",
-            "Offer seasonal reminders for upcoming weather shifts.",
-            "Invite feedback or future task requests."
-          ]
-        }
-      ];
-
-      const ALL_ITEMS = [...STARTER_KITS, ...MONTHLY_DROPS];
-      const CHECK_STORAGE_KEY = "jobline_vault_checklist_checks_v1";
-      let checklistChecks = safeJsonParse(readStore(CHECK_STORAGE_KEY), {});
-      if (!checklistChecks || typeof checklistChecks !== "object") checklistChecks = {};
-
-      let activeDropCategory = "all";
-      let activeModalItemId = null;
-
-      function renderStarterKits() {
-        const grid = document.getElementById("starter-kits-grid");
-        if (!grid) return;
-        grid.innerHTML = STARTER_KITS.map((kit) => {
-          const stepsHtml = kit.steps.map((s) => `<li>${escapeHtml(s)}</li>`).join("");
-          return `
-            <article class="card kit-card">
-              <div>
-                <div class="kit-meta">
-                  <span class="pill pill-emerald">${escapeHtml(kit.tag)}</span>
-                  <span class="muted" style="font-size: 0.76rem;">${kit.steps.length} steps</span>
-                </div>
-                <h3 style="margin-top: 10px;">${escapeHtml(kit.title)}</h3>
-                <p class="muted" style="font-size: 0.86rem; margin: 6px 0 0;">${escapeHtml(kit.summary)}</p>
-                <ol class="kit-steps">${stepsHtml}</ol>
-              </div>
-              <div class="btn-row">
-                <button type="button" class="btn btn-emerald btn-sm" data-open-kit="${escapeHtml(kit.id)}">Open Interactive Checklist</button>
-                <button type="button" class="btn btn-outline btn-sm" data-copy-kit="${escapeHtml(kit.id)}">Copy</button>
-              </div>
-            </article>
-          `;
-        }).join("");
-      }
-
-      function renderMonthlyDrops() {
-        const grid = document.getElementById("monthly-drops-grid");
-        if (!grid) return;
-        const list = activeDropCategory === "all"
-          ? MONTHLY_DROPS
-          : MONTHLY_DROPS.filter((d) => d.category === activeDropCategory);
-
-        grid.innerHTML = list.map((drop) => `
-          <article class="drop-card">
-            <div>
-              <div class="kit-meta">
-                <span class="pill pill-amber">${escapeHtml(drop.category)}</span>
-                <span class="muted" style="font-size: 0.76rem;">${drop.steps.length} steps</span>
-              </div>
-              <h3 style="margin-top: 10px;">${escapeHtml(drop.title)}</h3>
-              <p class="muted" style="font-size: 0.85rem; margin: 6px 0 0;">${escapeHtml(drop.summary)}</p>
-            </div>
-            <div class="btn-row">
-              <button type="button" class="btn btn-outline btn-sm" data-open-kit="${escapeHtml(drop.id)}">Preview &amp; Check</button>
-              <button type="button" class="btn btn-ghost btn-sm" data-copy-kit="${escapeHtml(drop.id)}">Copy</button>
-            </div>
-          </article>
-        `).join("");
-      }
-
-      function formatChecklistText(item) {
-        if (!item) return "";
-        const itemChecks = checklistChecks[item.id] || {};
-        const lines = [item.title + " (" + item.category + ")"];
-        item.steps.forEach((step, idx) => {
-          const mark = itemChecks[idx] ? "[x]" : "[ ]";
-          lines.push(mark + " " + step);
-        });
-        return lines.join("\n");
-      }
-
-      const kitModal = document.getElementById("kit-modal");
-      const kitModalTitle = document.getElementById("kit-modal-title");
-      const kitModalBadge = document.getElementById("kit-modal-badge");
-      const kitModalDesc = document.getElementById("kit-modal-desc");
-      const kitModalSteps = document.getElementById("kit-modal-steps");
-      const kitModalFeedback = document.getElementById("kit-modal-feedback");
-
-      function openKitModal(itemId) {
-        const item = ALL_ITEMS.find((x) => x.id === itemId);
-        if (!item || !kitModal) return;
-        activeModalItemId = item.id;
-        if (!checklistChecks[item.id]) checklistChecks[item.id] = {};
-
-        if (kitModalTitle) kitModalTitle.textContent = item.title;
-        if (kitModalBadge) kitModalBadge.textContent = item.category;
-        if (kitModalDesc) kitModalDesc.textContent = item.summary;
-        if (kitModalFeedback) kitModalFeedback.textContent = "";
-
-        renderModalSteps(item);
-        kitModal.hidden = false;
-      }
-
-      function renderModalSteps(item) {
-        if (!kitModalSteps || !item) return;
-        const map = checklistChecks[item.id] || {};
-        kitModalSteps.innerHTML = item.steps.map((step, idx) => {
-          const checked = Boolean(map[idx]);
-          return `
-            <label class="checklist-item ${checked ? "done" : ""}">
-              <input type="checkbox" data-step-index="${idx}" ${checked ? "checked" : ""} />
-              <span>${escapeHtml(step)}</span>
-            </label>
-          `;
-        }).join("");
-      }
-
-      function closeKitModal() {
-        if (kitModal) kitModal.hidden = true;
-        activeModalItemId = null;
-      }
-
-      /* ===================================================================
-         QUOTE BUILDER LOGIC
-         =================================================================== */
-      const QUOTE_PRESETS = {
-        plumbing: { title: "Faucet & P-Trap Service", hours: 2, rate: 95, materials: 45 },
-        electrical: { title: "GFCI Outlet & Fixture Swap", hours: 1.5, rate: 105, materials: 38 },
-        handyman: { title: "Door Alignment & Weatherstrip", hours: 2.5, rate: 80, materials: 30 },
-        seasonal: { title: "Gutter & Exterior Tune-Up", hours: 3, rate: 85, materials: 20 }
+      const els = {
+        form: document.getElementById("vehicle-form"),
+        year: document.getElementById("car-year"),
+        make: document.getElementById("car-make"),
+        model: document.getElementById("car-model"),
+        engine: document.getElementById("car-engine"),
+        vin: document.getElementById("car-vin"),
+        filter: document.getElementById("part-filter"),
+        body: document.getElementById("comparison-body"),
+        heading: document.getElementById("results-heading"),
+        total: document.getElementById("best-total-display"),
+        status: document.getElementById("status-msg"),
+        copyBtn: document.getElementById("copy-quote-btn"),
+        resetBtn: document.getElementById("reset-form-btn")
       };
 
-      const quotePresetEl = document.getElementById("quote-preset");
-      const quoteTitleEl = document.getElementById("quote-job-title");
-      const quoteHoursEl = document.getElementById("quote-hours");
-      const quoteRateEl = document.getElementById("quote-rate");
-      const quoteMaterialsEl = document.getElementById("quote-materials");
-      const quoteDiscountEl = document.getElementById("quote-discount");
-      const quoteTaxToggleEl = document.getElementById("quote-tax-toggle");
-      const quoteFeedbackEl = document.getElementById("quote-feedback");
-
-      function getQuoteCalculation() {
-        const title = (quoteTitleEl && quoteTitleEl.value.trim()) || "Local Service Estimate";
-        const hours = Math.max(0, Number(quoteHoursEl && quoteHoursEl.value) || 0);
-        const rate = Math.max(0, Number(quoteRateEl && quoteRateEl.value) || 0);
-        const materials = Math.max(0, Number(quoteMaterialsEl && quoteMaterialsEl.value) || 0);
-        const discount = Math.max(0, Number(quoteDiscountEl && quoteDiscountEl.value) || 0);
-        const includeTax = Boolean(quoteTaxToggleEl && quoteTaxToggleEl.checked);
-
-        const labor = hours * rate;
-        const base = labor + materials;
-        const tax = includeTax ? base * 0.0825 : 0;
-        const total = Math.max(0, base + tax - discount);
-
-        const summary = [
-          "Estimate: " + title,
-          "Labor (" + hours + "h @ " + formatMoney(rate) + "): " + formatMoney(labor),
-          "Materials: " + formatMoney(materials),
-          (includeTax ? "Tax (8.25%): " + formatMoney(tax) : "Tax: $0.00"),
-          (discount > 0 ? "Discount: -" + formatMoney(discount) : "Discount: $0.00"),
-          "Estimated Total: " + formatMoney(total)
-        ].join("\n");
-
-        return { labor, materials, tax, discount, total, summary };
+      function getVehicleLabel() {
+        const parts = [els.year.value.trim(), els.make.value.trim(), els.model.value.trim(), els.engine.value.trim()].filter(Boolean);
+        const vin = els.vin.value.trim().toUpperCase();
+        return parts.join(" ") + (vin ? " (VIN: " + vin + ")" : "");
       }
 
-      function updateQuoteDisplay() {
-        const calc = getQuoteCalculation();
-        const laborOut = document.getElementById("quote-labor-out");
-        const matOut = document.getElementById("quote-materials-out");
-        const taxOut = document.getElementById("quote-tax-out");
-        const discOut = document.getElementById("quote-discount-out");
-        const totalOut = document.getElementById("quote-total-out");
-
-        if (laborOut) laborOut.textContent = formatMoney(calc.labor);
-        if (matOut) matOut.textContent = formatMoney(calc.materials);
-        if (taxOut) taxOut.textContent = formatMoney(calc.tax);
-        if (discOut) discOut.textContent = "-" + formatMoney(calc.discount);
-        if (totalOut) totalOut.textContent = formatMoney(calc.total);
+      function buildStoreUrl(store, partTerm) {
+        const q = encodeURIComponent([els.year.value.trim(), els.make.value.trim(), els.model.value.trim(), partTerm].filter(Boolean).join(" "));
+        if (store === "autozone") return "https://www.autozone.com/searchresult?searchText=" + q;
+        if (store === "oreilly") return "https://www.oreillyauto.com/shop/b/search?q=" + q;
+        return "https://shop.advanceautoparts.com/web/SearchDisplay?searchTerm=" + q;
       }
 
-      /* ===================================================================
-         CONTACTS DIRECTORY LOGIC
-         =================================================================== */
-      const CONTACTS_KEY = "jobline_vault_contacts_v1";
-      const DEFAULT_CONTACTS = [
-        {
-          id: "cnt-1",
-          name: "Maya Lin",
-          phone: "(312) 555-0142",
-          email: "maya.lin@example.com",
-          role: "Customer",
-          area: "Northside • Front porch light",
-          notes: "Prefers morning visits; text 15 mins out."
-        },
-        {
-          id: "cnt-2",
-          name: "Devon Brooks",
-          phone: "(312) 555-0188",
-          email: "devon.brooks@example.com",
-          role: "Customer",
-          area: "West Loop • Kitchen sink",
-          notes: "Gate code #4920; dog stays in yard."
-        },
-        {
-          id: "cnt-3",
-          name: "Claire Ortiz",
-          phone: "(312) 555-0165",
-          email: "claire.ortiz@example.com",
-          role: "Lead",
-          area: "Logan Square • Entry door",
-          notes: "Wants quote for weatherstripping and latch."
-        },
-        {
-          id: "cnt-4",
-          name: "Harbor Supply Counter",
-          phone: "(312) 555-0119",
-          email: "orders@harborsupply.local",
-          role: "Supplier",
-          area: "Industrial Corridor • Will-call",
-          notes: "Opens 6:30 AM weekdays for fittings and trim."
-        }
-      ];
-
-      let contacts = safeJsonParse(readStore(CONTACTS_KEY), null);
-      if (!Array.isArray(contacts) || !contacts.length) {
-        contacts = DEFAULT_CONTACTS.map((c) => ({ ...c }));
-      }
-      let activeContactRole = "all";
-      let contactSearchTerm = "";
-
-      function saveContacts() {
-        writeStore(CONTACTS_KEY, JSON.stringify(contacts));
-        syncContactPicker();
+      function fmt(n) {
+        return "$" + Number(n).toFixed(2);
       }
 
-      function syncContactPicker() {
-        const picker = document.getElementById("booking-contact-picker");
-        if (!picker) return;
-      function syncContactInfoToChat(contact) {
-        if (!contact || !contact.name) return;
-        const token = contact.name.trim().split(/\s+/)[0].toLowerCase().replace(/[^a-z0-9]/g, "");
-        if (!token) return;
-        if (!chatState.phones || typeof chatState.phones !== "object") {
-          chatState.phones = {};
-        }
-        if (!chatState.emails || typeof chatState.emails !== "object") {
-          chatState.emails = {};
-        }
-        if (contact.phone) chatState.phones[token] = contact.phone;
-        if (contact.email) chatState.emails[token] = contact.email;
-        saveChatState();
-        if (chatState.activeThread === token) {
-          renderChatContactBar();
-        }
-      }
+      function renderComparison() {
+        const selectedFilter = els.filter.value;
+        const rows = selectedFilter === "all" ? PARTS_DATA : PARTS_DATA.filter((p) => p.id === selectedFilter);
+        els.heading.textContent = (getVehicleLabel() || "Vehicle") + " — Store Comparison";
 
-      function syncChatInfoToContact(threadKey, phoneVal, emailVal) {
-        const displayName = getThreadDisplayName(threadKey).toLowerCase();
-        const matched = contacts.find((c) => {
-          const first = c.name.trim().split(/\s+/)[0].toLowerCase();
-          return first === displayName || c.name.toLowerCase().includes(displayName);
-        });
-        if (matched) {
-          let changed = false;
-          if (phoneVal && matched.phone !== phoneVal) {
-            matched.phone = phoneVal;
-            changed = true;
-          }
-          if (emailVal && matched.email !== emailVal) {
-            matched.email = emailVal;
-            changed = true;
-          }
-          if (changed) {
-            saveContacts();
-            renderContacts();
-          }
-        }
-      }
+        let lowestSum = 0;
+        const quoteLines = [getVehicleLabel() + " — Best Store Prices:"];
 
-      function getInitials(name) {
-        const parts = String(name || "").trim().split(/\s+/).filter(Boolean);
-        if (!parts.length) return "JV";
-        return ((parts[0][0] || "") + (parts[1] ? parts[1][0] : parts[0][1] || "")).toUpperCase();
-      }
-
-      function renderContacts() {
-        const listEl = document.getElementById("contacts-list");
-        const countEl = document.getElementById("contacts-count");
-        if (!listEl) return;
-
-        const q = contactSearchTerm.trim().toLowerCase();
-        const filtered = contacts.filter((c) => {
-          const roleOk = activeContactRole === "all" || c.role === activeContactRole;
-          if (!roleOk) return false;
-          if (!q) return true;
-          const hay = [c.name, c.phone, c.email, c.role, c.area, c.notes].join(" ").toLowerCase();
-          return hay.includes(q);
-        });
-
-        if (countEl) countEl.textContent = String(filtered.length);
-
-        if (!filtered.length) {
-          listEl.innerHTML = `<div class="card-subtle muted" style="grid-column: 1 / -1; font-size: 0.84rem;">No matching contacts found.</div>`;
-          return;
-        }
-
-        listEl.innerHTML = filtered.map((c) => {
-          const pillClass = c.role === "Customer" ? "pill-emerald" : "pill-amber";
-          const telHref = toTelHref(c.phone);
-          const mailHref = toMailtoHref(
-            c.email,
-            "Jobline Vault — " + c.name,
-            "Hi " + c.name + ",\n\nFollowing up regarding your request."
-          );
-          const channelBits = [c.phone ? escapeHtml(c.phone) : "", c.email ? escapeHtml(c.email) : ""].filter(Boolean);
-          const channelLine = channelBits.length ? channelBits.join(" • ") : "No phone or email listed";
-          return `
-            <article class="contact-card">
-              <div>
-                <div class="contact-top">
-                  <div style="display: flex; align-items: center; gap: 9px; min-width: 0;">
-                    <div class="contact-avatar" aria-hidden="true">${escapeHtml(getInitials(c.name))}</div>
-                    <div style="min-width: 0;">
-                      <div style="font-weight: 800; font-size: 0.92rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(c.name)}</div>
-                      <div class="muted" style="font-size: 0.76rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${channelLine}</div>
-                    </div>
-                  </div>
-                  <span class="pill ${pillClass}">${escapeHtml(c.role)}</span>
-                </div>
-                ${c.area ? `<div class="muted" style="font-size: 0.76rem; margin-top: 7px;">${escapeHtml(c.area)}</div>` : ""}
-                ${c.notes ? `<div style="font-size: 0.8rem; color: #cbd5e1; margin-top: 5px;">${escapeHtml(c.notes)}</div>` : ""}
-              </div>
-              <div class="btn-row" style="gap: 5px;">
-                ${telHref ? `<a href="${escapeHtml(telHref)}" class="btn btn-outline btn-sm" style="padding: 4px 8px; min-height: 28px; font-size: 0.72rem;">Call</a>` : ""}
-                ${mailHref ? `<a href="${escapeHtml(mailHref)}" class="btn btn-outline btn-sm" style="padding: 4px 8px; min-height: 28px; font-size: 0.72rem;">Email</a>` : ""}
-                ${c.phone ? `<button type="button" class="btn btn-ghost btn-sm" style="padding: 4px 8px; min-height: 28px; font-size: 0.72rem;" data-copy-phone="${escapeHtml(c.id)}">Copy #</button>` : ""}
-                ${c.email ? `<button type="button" class="btn btn-ghost btn-sm" style="padding: 4px 8px; min-height: 28px; font-size: 0.72rem;" data-copy-email="${escapeHtml(c.id)}">Copy Email</button>` : ""}
-                <button type="button" class="btn btn-emerald btn-sm" style="padding: 4px 8px; min-height: 28px; font-size: 0.72rem;" data-book-contact="${escapeHtml(c.id)}">Book</button>
-                <button type="button" class="btn btn-amber btn-sm" style="padding: 4px 8px; min-height: 28px; font-size: 0.72rem;" data-chat-contact="${escapeHtml(c.id)}">Chat</button>
-                <button type="button" class="btn btn-outline btn-sm" style="padding: 4px 8px; min-height: 28px; font-size: 0.72rem;" data-copy-contact="${escapeHtml(c.id)}">Copy All</button>
-                <button type="button" class="btn btn-ghost btn-sm" style="padding: 4px 8px; min-height: 28px; font-size: 0.72rem;" data-edit-contact="${escapeHtml(c.id)}">Edit</button>
-                <button type="button" class="btn btn-danger btn-sm" style="padding: 4px 8px; min-height: 28px; font-size: 0.72rem;" data-del-contact="${escapeHtml(c.id)}">Delete</button>
-              </div>
-            </article>
-          `;
-        }).join("");
-      }
-
-      function resetContactForm() {
-        const form = document.getElementById("contact-form");
-        const editIdEl = document.getElementById("contact-edit-id");
-        const titleEl = document.getElementById("contact-form-title");
-        const saveBtn = document.getElementById("contact-save-btn");
-        const cancelBtn = document.getElementById("contact-cancel-btn");
-        if (form) form.reset();
-        if (editIdEl) editIdEl.value = "";
-        if (titleEl) titleEl.textContent = "Add New Contact";
-        if (saveBtn) saveBtn.textContent = "Save Contact";
-        if (cancelBtn) cancelBtn.hidden = true;
-      }
-
-      /* ===================================================================
-         SCHEDULING & BOOKINGS LOGIC
-         =================================================================== */
-      const BOOKINGS_KEY = "jobline_vault_bookings_v1";
-      const BOOKING_STATUSES = ["Confirmed", "En Route", "Completed"];
-      let selectedSlot = "08:30 AM";
-
-      let bookings = safeJsonParse(readStore(BOOKINGS_KEY), []);
-      if (!Array.isArray(bookings)) bookings = [];
-
-      function saveBookings() {
-        writeStore(BOOKINGS_KEY, JSON.stringify(bookings));
-      }
-
-      function formatBookingSummary(data) {
-        const tz = getLocalTimeZoneLabel();
-        return [
-          "Booking: " + data.service,
-          "Customer: " + data.customerName + (data.customerPhone ? " • Phone: " + data.customerPhone : "") + (data.customerEmail ? " (" + data.customerEmail + ")" : ""),
-          "When: " + data.date + " at " + data.slot + " (" + tz + ")",
-          "Host: " + data.hostEmail + (data.hostPhone ? " • Dispatch Phone: " + data.hostPhone : ""),
-          data.notes ? "Notes: " + data.notes : "Notes: None"
-        ].join("\n");
-      }
-
-      function buildMailtoHref(data) {
-        const to = encodeURIComponent(data.customerEmail || data.hostEmail || "");
-        const cc = data.customerEmail && data.hostEmail ? "?cc=" + encodeURIComponent(data.hostEmail) : "";
-        const subject = encodeURIComponent("Booking: " + data.service + " — " + data.date + " (" + data.slot + ")");
-        const body = encodeURIComponent(formatBookingSummary(data));
-        return `mailto:${to}${cc}${cc ? "&" : "?"}subject=${subject}&body=${body}`;
-      }
-
-      function getBookingFormValues() {
-        return {
-          hostEmail: ((document.getElementById("booking-host-email") || {}).value || "").trim() || "dispatch@joblinevault.local",
-          hostPhone: ((document.getElementById("booking-host-phone") || {}).value || "").trim(),
-          service: ((document.getElementById("booking-service") || {}).value || "Standard Repair / Service Call").trim(),
-          date: ((document.getElementById("booking-date") || {}).value || "").trim(),
-          slot: selectedSlot,
-          customerName: ((document.getElementById("booking-customer-name") || {}).value || "").trim(),
-          customerEmail: ((document.getElementById("booking-customer-email") || {}).value || "").trim(),
-          customerPhone: ((document.getElementById("booking-customer-phone") || {}).value || "").trim(),
-          notes: ((document.getElementById("booking-notes") || {}).value || "").trim()
-        };
-      }
-
-      function refreshBookingMailto() {
-        const link = document.getElementById("booking-mailto-btn");
-        if (!link) return;
-        link.href = buildMailtoHref(getBookingFormValues());
-      }
-
-      function getLocalTimeZoneLabel() {
-        try {
-          const parts = Intl.DateTimeFormat(undefined, { timeZoneName: "short" }).formatToParts(new Date());
-          const tzPart = parts.find((p) => p.type === "timeZoneName");
-          return tzPart ? tzPart.value : "Local Time";
-        } catch (_err) {
-          return "Local Time";
-        }
-      }
-
-      function renderBookings() {
-        const listEl = document.getElementById("bookings-list");
-        const countEl = document.getElementById("bookings-count");
-        if (!listEl) return;
-        if (countEl) countEl.textContent = String(bookings.length);
-
-        if (!bookings.length) {
-          listEl.innerHTML = `<div class="card-subtle muted" style="font-size: 0.84rem;">No bookings saved yet. Fill out the form to schedule an appointment.</div>`;
-          return;
-        }
-
-        listEl.innerHTML = bookings.map((b) => {
-          const status = BOOKING_STATUSES.includes(b.status) ? b.status : "Confirmed";
-          const pillClass = status === "Completed" ? "pill-emerald" : status === "En Route" ? "pill-amber" : "pill";
-          return `
-            <article class="booking-item">
-              <div class="booking-head">
-                <div>
-                  <strong>${escapeHtml(b.customerName)}</strong>
-                  <span class="muted" style="font-size: 0.8rem;"> • ${escapeHtml(b.service)}</span>
-                </div>
-                <span class="pill ${pillClass}">${escapeHtml(status)}</span>
-              </div>
-              <div class="muted" style="font-size: 0.8rem;">
-                ${escapeHtml(b.date)} at <strong>${escapeHtml(b.slot)}</strong>${b.customerPhone ? " • <strong>" + escapeHtml(b.customerPhone) + "</strong>" : ""}${b.customerEmail ? " • " + escapeHtml(b.customerEmail) : ""}
-              </div>
-              ${b.hostPhone ? `<div class="muted" style="font-size: 0.75rem; margin-top: 3px;">Dispatch Phone: ${escapeHtml(b.hostPhone)}</div>` : ""}
-              ${b.notes ? `<div style="font-size: 0.8rem; color: #cbd5e1; margin-top: 5px;">${escapeHtml(b.notes)}</div>` : ""}
-              <div class="btn-row" style="margin-top: 10px; gap: 6px;">
-                <button type="button" class="btn btn-outline btn-sm" style="padding: 4px 8px; min-height: 28px; font-size: 0.72rem;" data-cycle-booking="${escapeHtml(b.id)}">Cycle Status</button>
-                <button type="button" class="btn btn-amber btn-sm" style="padding: 4px 8px; min-height: 28px; font-size: 0.72rem;" data-remind-booking="${escapeHtml(b.id)}">Chat Reminder</button>
-                ${toTelHref(b.customerPhone) ? `<a href="${escapeHtml(toTelHref(b.customerPhone))}" class="btn btn-ghost btn-sm" style="padding: 4px 8px; min-height: 28px; font-size: 0.72rem;">Call Client</a>` : ""}
-                <a href="${escapeHtml(buildMailtoHref(b))}" class="btn btn-ghost btn-sm" style="padding: 4px 8px; min-height: 28px; font-size: 0.72rem;">Email</a>
-                <button type="button" class="btn btn-danger btn-sm" style="padding: 4px 8px; min-height: 28px; font-size: 0.72rem;" data-del-booking="${escapeHtml(b.id)}">Remove</button>
-              </div>
-            </article>
-          `;
-        }).join("");
-      }
-
-      /* ===================================================================
-         FLOATING CUSTOMER CHAT + PHOTO PERMISSIONS & ATTACHMENTS
-         =================================================================== */
-      const CHAT_KEY = "jobline_vault_chat_v1";
-      const PHOTO_PERM_KEY = "jobline_vault_photo_perm_v1";
-
-      const DEFAULT_THREADS = {
-        maya: [
-          { sender: "Maya", role: "customer", text: "Hi! Can you check the porch light fixture tomorrow morning?", time: "09:10 AM", photo: null },
-          { sender: "You", role: "host", text: "Happy to take a look. Morning works well—want to share a quick photo of the switch or fixture?", time: "09:12 AM", photo: null }
-        ],
-        devon: [
-          { sender: "Devon", role: "customer", text: "Under-sink trap has a slow drip when the faucet runs.", time: "10:05 AM", photo: null }
-        ],
-        claire: [
-          { sender: "Claire", role: "customer", text: "Looking for an estimate to weatherstrip the back entry door.", time: "11:20 AM", photo: null }
-        ]
-      };
-
-      const DEFAULT_THREAD_PHONES = {
-        maya: "(312) 555-0142",
-        devon: "(312) 555-0188",
-        claire: "(312) 555-0165"
-      };
-
-      const DEFAULT_THREAD_EMAILS = {
-        maya: "maya.lin@example.com",
-        devon: "devon.brooks@example.com",
-        claire: "claire.ortiz@example.com"
-      };
-
-      let chatState = safeJsonParse(readStore(CHAT_KEY), null);
-      if (!chatState || typeof chatState !== "object" || !chatState.threads) {
-        chatState = {
-          activeThread: "maya",
-          unread: { maya: 0, devon: 1, claire: 1 },
-          phones: { ...DEFAULT_THREAD_PHONES },
-          emails: { ...DEFAULT_THREAD_EMAILS },
-          threads: DEFAULT_THREADS
-        };
-      }
-      if (!chatState.phones || typeof chatState.phones !== "object") {
-        chatState.phones = { ...DEFAULT_THREAD_PHONES };
-      }
-      if (!chatState.emails || typeof chatState.emails !== "object") {
-        chatState.emails = { ...DEFAULT_THREAD_EMAILS };
-      }
-
-      let photoPermission = readStore(PHOTO_PERM_KEY) || "prompt"; // "granted" | "revoked" | "prompt"
-      let pendingPhoto = null; // { name, dataUrl }
-      let chatSearchQuery = "";
-      let typingTimer = null;
-
-      function saveChatState() {
-        try {
-          writeStore(CHAT_KEY, JSON.stringify(chatState));
-        } catch (_err) {
-          // If base64 photo exceeds quota in localStorage, strip photo dataUrl for storage persistence
-          const slimThreads = {};
-          Object.keys(chatState.threads).forEach((k) => {
-            slimThreads[k] = (chatState.threads[k] || []).map((m) => ({
-              sender: m.sender,
-              role: m.role,
-              text: m.text,
-              time: m.time,
-              photo: m.photo ? { name: m.photo.name, dataUrl: "" } : null
-            }));
-          });
-          writeStore(CHAT_KEY, JSON.stringify({
-            activeThread: chatState.activeThread,
-            unread: chatState.unread,
-            phones: chatState.phones,
-            emails: chatState.emails,
-            threads: slimThreads
-          }));
-        }
-      }
-
-      function nowTimeLabel() {
-        try {
-          return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-        } catch (_err) {
-          return "Now";
-        }
-      }
-
-      function ensureThread(threadKey) {
-        const key = String(threadKey || "maya").toLowerCase().replace(/[^a-z0-9_-]/g, "") || "maya";
-        if (!chatState.threads[key]) {
-          chatState.threads[key] = [];
-        }
-        if (!chatState.unread || typeof chatState.unread !== "object") {
-          chatState.unread = {};
-        }
-        if (typeof chatState.unread[key] !== "number") {
-          chatState.unread[key] = 0;
-        }
-        return key;
-      }
-
-      function getThreadDisplayName(key) {
-        if (key === "maya") return "Maya";
-        if (key === "devon") return "Devon";
-        if (key === "claire") return "Claire";
-        const matched = contacts.find((c) => c.name.toLowerCase().replace(/[^a-z0-9]/g, "").startsWith(key));
-        return matched ? matched.name.split(/\s+/)[0] : key.charAt(0).toUpperCase() + key.slice(1);
-      }
-
-      function getThreadPhone(key) {
-        const k = ensureThread(key);
-        if (chatState.phones && chatState.phones[k]) {
-          return chatState.phones[k];
-        }
-        const matched = contacts.find((c) => c.name.trim().split(/\s+/)[0].toLowerCase().replace(/[^a-z0-9]/g, "") === k);
-        return matched && matched.phone ? matched.phone : "";
-      }
-
-      function getThreadEmail(key) {
-        const k = ensureThread(key);
-        if (chatState.emails && chatState.emails[k]) {
-          return chatState.emails[k];
-        }
-        const matched = contacts.find((c) => c.name.trim().split(/\s+/)[0].toLowerCase().replace(/[^a-z0-9]/g, "") === k);
-        return matched && matched.email ? matched.email : "";
-      }
-
-      function renderChatContactBar() {
-        const activeKey = ensureThread(chatState.activeThread);
-        const phone = getThreadPhone(activeKey);
-        const email = getThreadEmail(activeKey);
-        const name = getThreadDisplayName(activeKey);
-
-        const phoneDisplay = document.getElementById("chat-thread-phone-display");
-        const callLink = document.getElementById("chat-thread-call-link");
-        const copyPhoneBtn = document.getElementById("chat-thread-copy-phone-btn");
-        const emailDisplay = document.getElementById("chat-thread-email-display");
-        const mailtoLink = document.getElementById("chat-thread-mailto-link");
-        const copyEmailBtn = document.getElementById("chat-thread-copy-email-btn");
-        const editPhoneInput = document.getElementById("chat-phone-edit-input");
-        const editEmailInput = document.getElementById("chat-email-edit-input");
-
-        if (phoneDisplay) {
-          phoneDisplay.textContent = phone || "Not added";
-          phoneDisplay.style.color = phone ? "#fcd34d" : "#94a3b8";
-        }
-        const telHref = toTelHref(phone);
-        if (callLink) {
-          if (telHref) {
-            callLink.href = telHref;
-            callLink.hidden = false;
-          } else {
-            callLink.hidden = true;
-          }
-        }
-        if (copyPhoneBtn) copyPhoneBtn.hidden = !phone;
-
-        if (emailDisplay) {
-          emailDisplay.textContent = email || "Not added";
-          emailDisplay.style.color = email ? "#6ee7b7" : "#94a3b8";
-        }
-        const mailHref = toMailtoHref(email, "Jobline Vault — " + name, "Hi " + name + ",\n\nFollowing up from our chat.");
-        if (mailtoLink) {
-          if (mailHref) {
-            mailtoLink.href = mailHref;
-            mailtoLink.hidden = false;
-          } else {
-            mailtoLink.hidden = true;
-          }
-        }
-        if (copyEmailBtn) copyEmailBtn.hidden = !email;
-
-        if (editPhoneInput && document.activeElement !== editPhoneInput) {
-          editPhoneInput.value = phone || "";
-        }
-        if (editEmailInput && document.activeElement !== editEmailInput) {
-          editEmailInput.value = email || "";
-        }
-      }
-
-      function renderUnreadBadge() {
-        const badge = document.getElementById("chat-unread-badge");
-        if (!badge) return;
-        const drawer = document.getElementById("floating-chat-drawer");
-        const isOpen = drawer && !drawer.hidden;
-        let total = 0;
-        if (chatState.unread) {
-          Object.keys(chatState.unread).forEach((k) => {
-            if (!isOpen || k !== chatState.activeThread) {
-              total += Number(chatState.unread[k]) || 0;
-            }
-          });
-        }
-        badge.textContent = String(total);
-        badge.hidden = total <= 0;
-      }
-
-      function updatePhotoPermissionUI() {
-        const statusEl = document.getElementById("photo-perm-status-text");
-        const reqBtn = document.getElementById("photo-perm-request-btn");
-        const revBtn = document.getElementById("photo-perm-toggle-btn");
-        if (!statusEl) return;
-
-        if (photoPermission === "granted") {
-          statusEl.textContent = "Photo Access: Allowed";
-          statusEl.style.color = "#6ee7b7";
-          if (reqBtn) reqBtn.textContent = "Allowed";
-          if (revBtn) revBtn.textContent = "Revoke";
-        } else if (photoPermission === "revoked") {
-          statusEl.textContent = "Photo Access: Revoked";
-          statusEl.style.color = "#fca5a5";
-          if (reqBtn) reqBtn.textContent = "Re-Allow";
-          if (revBtn) revBtn.textContent = "Revoked";
-        } else {
-          statusEl.textContent = "Photo Access: Not Requested";
-          statusEl.style.color = "#fcd34d";
-          if (reqBtn) reqBtn.textContent = "Allow Photos";
-          if (revBtn) revBtn.textContent = "Revoke";
-        }
-      }
-
-      function requestPhotoAccess(onGranted) {
-        if (photoPermission === "granted") {
-          if (typeof onGranted === "function") onGranted();
-          return;
-        }
-        photoPermission = "granted";
-        writeStore(PHOTO_PERM_KEY, "granted");
-        updatePhotoPermissionUI();
-        const fb = document.getElementById("chat-feedback");
-        if (fb) fb.textContent = "Photo access granted for this site.";
-        if (typeof onGranted === "function") onGranted();
-      }
-
-      function revokePhotoAccess() {
-        photoPermission = "revoked";
-        writeStore(PHOTO_PERM_KEY, "revoked");
-        pendingPhoto = null;
-        renderPendingPhoto();
-        updatePhotoPermissionUI();
-        const fb = document.getElementById("chat-feedback");
-        if (fb) fb.textContent = "Photo access revoked; pending photo cleared.";
-      }
-
-      function renderPendingPhoto() {
-        const strip = document.getElementById("pending-photo-strip");
-        const thumb = document.getElementById("pending-photo-thumb");
-        const nameEl = document.getElementById("pending-photo-name");
-        if (!strip) return;
-
-        if (!pendingPhoto || !pendingPhoto.dataUrl) {
-          strip.hidden = true;
-          if (thumb) thumb.removeAttribute("src");
-          if (nameEl) nameEl.textContent = "";
-          return;
-        }
-        strip.hidden = false;
-        if (thumb) {
-          thumb.src = pendingPhoto.dataUrl;
-          thumb.alt = pendingPhoto.name || "Attached photo";
-        }
-        if (nameEl) nameEl.textContent = pendingPhoto.name || "Photo attachment";
-      }
-
-      function handlePhotoFile(file) {
-        const fb = document.getElementById("chat-feedback");
-        if (!file) return;
-        if (photoPermission !== "granted") {
-          if (fb) fb.textContent = "Click 'Allow Photos' first so the site can access your photos.";
-          return;
-        }
-        if (!file.type || !file.type.startsWith("image/")) {
-          if (fb) fb.textContent = "Please select an image file (PNG, JPG, WebP, etc.).";
-          return;
-        }
-        if (file.size > 4 * 1024 * 1024) {
-          if (fb) fb.textContent = "Photo is over 4 MB—choose a smaller image for fast chat preview.";
-          return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function (ev) {
-          const resultUrl = ev && ev.target ? ev.target.result : "";
-          if (typeof resultUrl === "string" && resultUrl.startsWith("data:image/")) {
-            pendingPhoto = { name: file.name || "job-photo.jpg", dataUrl: resultUrl };
-            renderPendingPhoto();
-            if (fb) fb.textContent = "Attached " + pendingPhoto.name + " (ready to send).";
-          }
-        };
-        reader.onerror = function () {
-          if (fb) fb.textContent = "Could not read that image file.";
-        };
-        reader.readAsDataURL(file);
-      }
-
-      function renderChatWidget() {
-        const threadBar = document.getElementById("chat-thread-bar");
-        const subtitle = document.getElementById("chat-active-subtitle");
-        const msgList = document.getElementById("chat-messages");
-        const activeKey = ensureThread(chatState.activeThread);
-        chatState.activeThread = activeKey;
-
-        if (subtitle) {
-          subtitle.textContent = "Active: " + getThreadDisplayName(activeKey);
-        }
-
-        const keys = Object.keys(chatState.threads);
-        if (threadBar) {
-          threadBar.innerHTML = keys.map((k) => {
-            const isActive = k === activeKey;
-            const unread = !isActive && chatState.unread && chatState.unread[k] > 0 ? chatState.unread[k] : 0;
-            return `
-              <button type="button" class="thread-chip ${isActive ? "active" : ""}" data-select-thread="${escapeHtml(k)}" role="tab" aria-selected="${isActive ? "true" : "false"}">
-                <span>${escapeHtml(getThreadDisplayName(k))}</span>
-                ${unread > 0 ? `<span class="unread-badge" style="min-width: 16px; height: 16px; font-size: 0.65rem;">${unread}</span>` : ""}
-              </button>
-            `;
-          }).join("");
-        }
-
-        if (msgList) {
-          const q = chatSearchQuery.trim().toLowerCase();
-          const messages = (chatState.threads[activeKey] || []).filter((m) => {
-            if (!q) return true;
-            const textMatch = String(m.text || "").toLowerCase().includes(q);
-            const photoMatch = m.photo && String(m.photo.name || "").toLowerCase().includes(q);
-            return textMatch || photoMatch;
-          });
-
-          if (!messages.length) {
-            msgList.innerHTML = `<div class="muted" style="font-size: 0.8rem; text-align: center; padding: 18px 8px;">No messages in this view yet.</div>`;
-          } else {
-            msgList.innerHTML = messages.map((m) => {
-              const bubbleClass = m.role === "host" ? "msg-bubble msg-host" : "msg-bubble msg-customer";
-              const photoHtml = m.photo && m.photo.dataUrl
-                ? `<img src="${escapeHtml(m.photo.dataUrl)}" alt="${escapeHtml(m.photo.name || "Shared photo")}" class="msg-photo-thumb" data-lightbox-src="${escapeHtml(m.photo.dataUrl)}" data-lightbox-caption="${escapeHtml(m.photo.name || "Job-Site Photo")}" />`
-                : (m.photo ? `<div class="muted" style="font-size: 0.74rem; margin-top: 4px;">[Photo: ${escapeHtml(m.photo.name || "image")}]</div>` : "");
-              return `
-                <div class="${bubbleClass}">
-                  <div class="msg-meta">${escapeHtml(m.sender || "User")} • ${escapeHtml(m.time || "")}</div>
-                  ${m.text ? `<div>${escapeHtml(m.text)}</div>` : ""}
-                  ${photoHtml}
-                </div>
-              `;
-            }).join("");
-          }
-          msgList.scrollTop = msgList.scrollHeight;
-        }
-
-        updatePhotoPermissionUI();
-        renderPendingPhoto();
-        renderUnreadBadge();
-      }
-
-      function appendMessage(threadKey, msgObj) {
-        const key = ensureThread(threadKey);
-        chatState.threads[key].push(msgObj);
-        if (msgObj.role === "customer") {
-          const drawer = document.getElementById("floating-chat-drawer");
-          const isViewingThis = drawer && !drawer.hidden && chatState.activeThread === key;
-          if (!isViewingThis) {
-            chatState.unread[key] = (Number(chatState.unread[key]) || 0) + 1;
-          }
-        }
-        saveChatState();
-        renderChatWidget();
-      }
-
-      function renderChatWidget() {
-        const key = ensureThread(threadKey || chatState.activeThread);
-        const typingEl = document.getElementById("chat-typing-indicator");
-        updatePhotoPermissionUI();
-        renderChatContactBar();
-        renderPendingPhoto();
-        renderUnreadBadge();
-      }
-        if (typingTimer) clearTimeout(typingTimer);
-        typingTimer = setTimeout(() => {
-          if (typingEl) typingEl.hidden = true;
-          const replies = [
-            "Sounds good—that window works on my end.",
-            "Thanks for the quick update! I'll have the area cleared.",
-            "Got it, appreciate the clear estimate breakdown."
+        els.body.innerHTML = rows.map((part) => {
+          const entries = [
+            { key: "autozone", label: "AutoZone", val: part.prices.autozone },
+            { key: "oreilly", label: "O'Reilly", val: part.prices.oreilly },
+            { key: "advance", label: "Advance", val: part.prices.advance }
           ];
-          const pick = replies[Math.floor(Math.random() * replies.length)];
-          appendMessage(key, {
-            sender: getThreadDisplayName(key),
-            role: "customer",
-            text: pick,
-            time: nowTimeLabel(),
-            photo: null
-          });
-        }, 700);
+          const minVal = Math.min(...entries.map((e) => e.val));
+          const bestStore = entries.find((e) => e.val === minVal);
+          lowestSum += minVal;
+          quoteLines.push("- " + part.name + ": " + fmt(minVal) + " (" + bestStore.label + ")");
+
+          function cellHtml(storeKey, priceVal) {
+            const isBest = priceVal === minVal;
+            return '<td class="' + (isBest ? "best-cell" : "") + '"><span class="price">' + fmt(priceVal) + '</span>' +
+              (isBest ? '<span class="badge-best">Lowest</span>' : "") + "</td>";
+          }
+
+          return (
+            "<tr>" +
+            "<td><strong>" + part.name + "</strong></td>" +
+            cellHtml("autozone", part.prices.autozone) +
+            cellHtml("oreilly", part.prices.oreilly) +
+            cellHtml("advance", part.prices.advance) +
+            '<td><div class="store-links">' +
+            '<a href="' + buildStoreUrl("autozone", part.searchTerm) + '" target="_blank" rel="noopener noreferrer">AutoZone</a>' +
+            '<a href="' + buildStoreUrl("oreilly", part.searchTerm) + '" target="_blank" rel="noopener noreferrer">O\'Reilly</a>' +
+            '<a href="' + buildStoreUrl("advance", part.searchTerm) + '" target="_blank" rel="noopener noreferrer">Advance</a>' +
+            "</div></td>" +
+            "</tr>"
+          );
+        }).join("");
+
+        els.total.textContent = "Lowest Combined Subtotal (Shown Items): " + fmt(lowestSum);
+        els.copyBtn.dataset.quote = quoteLines.join("\n") + "\nLowest Total: " + fmt(lowestSum);
+
+        safeSet("jobline_car_lookup", JSON.stringify({
+          year: els.year.value,
+          make: els.make.value,
+          model: els.model.value,
+          engine: els.engine.value,
+          vin: els.vin.value,
+          filter: els.filter.value
+        }));
       }
 
-      /* ===================================================================
-         EVENT BINDING & INITIALIZATION
-         =================================================================== */
-      function bindAllEvents() {
-        // Starter kit & drop card clicks (open modal or copy)
-        document.addEventListener("click", (e) => {
-          const target = e.target;
-          if (!(target instanceof Element)) return;
-
-          const openKitBtn = target.closest("[data-open-kit]");
-          if (openKitBtn) {
-            openKitModal(openKitBtn.getAttribute("data-open-kit"));
-            return;
-          }
-
-          const copyKitBtn = target.closest("[data-copy-kit]");
-          if (copyKitBtn) {
-            const id = copyKitBtn.getAttribute("data-copy-kit");
-            const item = ALL_ITEMS.find((x) => x.id === id);
-            if (item) {
-              copyToClipboard(formatChecklistText(item), (ok) => {
-                copyKitBtn.textContent = ok ? "Copied" : "Copy failed";
-                setTimeout(() => { copyKitBtn.textContent = "Copy"; }, 1400);
-              });
-            }
-            return;
-          }
-
-          // Lightbox open
-          const imgThumb = target.closest("[data-lightbox-src]");
-          if (imgThumb) {
-            const lb = document.getElementById("photo-lightbox");
-            const lbImg = document.getElementById("lightbox-img");
-            const lbCap = document.getElementById("lightbox-caption");
-            if (lb && lbImg) {
-              lbImg.src = imgThumb.getAttribute("data-lightbox-src") || "";
-              if (lbCap) lbCap.textContent = imgThumb.getAttribute("data-lightbox-caption") || "Job-Site Photo";
-              lb.hidden = false;
-            }
-          }
+      document.querySelectorAll("[data-preset]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const [y, mk, md, eng, vin] = btn.getAttribute("data-preset").split("|");
+          els.year.value = y;
+          els.make.value = mk;
+          els.model.value = md;
+          els.engine.value = eng;
+          els.vin.value = vin;
+          renderComparison();
+          els.status.textContent = "Loaded preset: " + y + " " + mk + " " + md + ".";
         });
+      });
 
-        // Monthly drop category pills
-        document.querySelectorAll("[data-drop-category]").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            document.querySelectorAll("[data-drop-category]").forEach((b) => b.classList.remove("active"));
-            btn.classList.add("active");
-            activeDropCategory = btn.getAttribute("data-drop-category") || "all";
-            renderMonthlyDrops();
+      els.form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        renderComparison();
+        els.status.textContent = "Updated comparison for " + getVehicleLabel() + ".";
+      });
+
+      els.filter.addEventListener("change", renderComparison);
+
+      els.copyBtn.addEventListener("click", () => {
+        const text = els.copyBtn.dataset.quote || "";
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => {
+            els.status.textContent = "Copied best-price quote to clipboard.";
+          }).catch(() => {
+            els.status.textContent = "Copy unavailable in this browser context.";
           });
-        });
-
-        // Kit modal controls
-        const kitCloseBtn = document.getElementById("kit-modal-close-btn");
-        if (kitCloseBtn) kitCloseBtn.addEventListener("click", closeKitModal);
-        if (kitModal) {
-          kitModal.addEventListener("click", (e) => {
-            if (e.target === kitModal) closeKitModal();
-          });
-        }
-        if (kitModalSteps) {
-          kitModalSteps.addEventListener("change", (e) => {
-            const cb = e.target;
-            if (!(cb instanceof HTMLInputElement) || cb.type !== "checkbox" || !activeModalItemId) return;
-            const idx = Number(cb.getAttribute("data-step-index"));
-            if (!checklistChecks[activeModalItemId]) checklistChecks[activeModalItemId] = {};
-            checklistChecks[activeModalItemId][idx] = cb.checked;
-            writeStore(CHECK_STORAGE_KEY, JSON.stringify(checklistChecks));
-            const item = ALL_ITEMS.find((x) => x.id === activeModalItemId);
-            if (item) renderModalSteps(item);
-          });
-        }
-        const kitCopyBtn = document.getElementById("kit-modal-copy-btn");
-        if (kitCopyBtn) {
-          kitCopyBtn.addEventListener("click", () => {
-            const item = ALL_ITEMS.find((x) => x.id === activeModalItemId);
-            if (!item) return;
-            copyToClipboard(formatChecklistText(item), (ok) => {
-              if (kitModalFeedback) kitModalFeedback.textContent = ok ? "Checklist copied to clipboard." : "Clipboard copy unavailable.";
-            });
-          });
-        }
-        const kitResetBtn = document.getElementById("kit-modal-reset-btn");
-        if (kitResetBtn) {
-          kitResetBtn.addEventListener("click", () => {
-            if (!activeModalItemId) return;
-            checklistChecks[activeModalItemId] = {};
-            writeStore(CHECK_STORAGE_KEY, JSON.stringify(checklistChecks));
-            const item = ALL_ITEMS.find((x) => x.id === activeModalItemId);
-            if (item) renderModalSteps(item);
-            if (kitModalFeedback) kitModalFeedback.textContent = "Checklist checks reset.";
-          });
-        }
-
-        // Lightbox close
-        const lbClose = document.getElementById("lightbox-close-btn");
-        const lbBackdrop = document.getElementById("photo-lightbox");
-        if (lbClose && lbBackdrop) lbClose.addEventListener("click", () => { lbBackdrop.hidden = true; });
-        if (lbBackdrop) {
-          lbBackdrop.addEventListener("click", (e) => {
-            if (e.target === lbBackdrop) lbBackdrop.hidden = true;
-          });
-        }
-
-        // Quote builder bindings
-        if (quotePresetEl) {
-          quotePresetEl.addEventListener("change", () => {
-            const preset = QUOTE_PRESETS[quotePresetEl.value];
-            if (preset) {
-              if (quoteTitleEl) quoteTitleEl.value = preset.title;
-              if (quoteHoursEl) quoteHoursEl.value = String(preset.hours);
-              if (quoteRateEl) quoteRateEl.value = String(preset.rate);
-              if (quoteMaterialsEl) quoteMaterialsEl.value = String(preset.materials);
-            }
-            updateQuoteDisplay();
-          });
-        }
-        [quoteTitleEl, quoteHoursEl, quoteRateEl, quoteMaterialsEl, quoteDiscountEl, quoteTaxToggleEl].forEach((el) => {
-          if (el) el.addEventListener("input", updateQuoteDisplay);
-          if (el) el.addEventListener("change", updateQuoteDisplay);
-        });
-
-        const copyQuoteBtn = document.getElementById("copy-quote-btn");
-        if (copyQuoteBtn) {
-          copyQuoteBtn.addEventListener("click", () => {
-            const calc = getQuoteCalculation();
-            copyToClipboard(calc.summary, (ok) => {
-              if (quoteFeedbackEl) {
-                quoteFeedbackEl.textContent = ok ? "Quote summary copied to clipboard." : "Could not copy automatically.";
-              }
-            });
-          });
-        }
-
-        const postQuoteChatBtn = document.getElementById("post-quote-chat-btn");
-        if (postQuoteChatBtn) {
-          postQuoteChatBtn.addEventListener("click", () => {
-            const calc = getQuoteCalculation();
-            openChatDrawer(chatState.activeThread);
-            appendMessage(chatState.activeThread, {
-              sender: "You",
-              role: "host",
-              text: calc.summary,
-              time: nowTimeLabel(),
-              photo: null
-            });
-            if (quoteFeedbackEl) quoteFeedbackEl.textContent = "Quote posted to active customer chat.";
-          });
-        }
-
-        ["booking-host-email", "booking-host-phone", "booking-service", "booking-date", "booking-customer-name", "booking-customer-email", "booking-customer-phone", "booking-notes"].forEach((id) => {
-          const el = document.getElementById(id);
-          if (el) {
-            el.addEventListener("input", refreshBookingMailto);
-            el.addEventListener("change", refreshBookingMailto);
-          }
-        });
-
-        const contactPicker = document.getElementById("booking-contact-picker");
-        if (contactPicker) {
-          contactPicker.addEventListener("change", () => {
-            const chosen = contacts.find((c) => c.id === contactPicker.value);
-            if (!chosen) return;
-            const nameInput = document.getElementById("booking-customer-name");
-            const emailInput = document.getElementById("booking-customer-email");
-            const phoneInput = document.getElementById("booking-customer-phone");
-            const notesInput = document.getElementById("booking-notes");
-            if (nameInput) nameInput.value = chosen.name || "";
-            if (emailInput) emailInput.value = chosen.email || "";
-            if (phoneInput) phoneInput.value = chosen.phone || "";
-            if (notesInput && chosen.area) {
-              notesInput.value = notesInput.value ? notesInput.value + " • " + chosen.area : chosen.area;
-            }
-            refreshBookingMailto();
-          });
-        }
-
-        if (bookingForm) {
-          bookingForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const vals = getBookingFormValues();
-            if (!vals.customerName) {
-              if (bookingFeedback) bookingFeedback.textContent = "Please enter a customer name to save the booking.";
-              return;
-            }
-            if (!vals.date) {
-              if (bookingFeedback) bookingFeedback.textContent = "Please choose a booking date.";
-              return;
-            }
-            const hostCheck = validatePhoneNumber(vals.hostPhone);
-            if (!hostCheck.valid) {
-              if (bookingFeedback) bookingFeedback.textContent = "Host phone: " + hostCheck.error;
-              return;
-            }
-            const custCheck = validatePhoneNumber(vals.customerPhone);
-            if (!custCheck.valid) {
-              if (bookingFeedback) bookingFeedback.textContent = "Customer phone: " + custCheck.error;
-              return;
-            }
-            const custEmailCheck = validateEmailAddress(vals.customerEmail);
-            if (!custEmailCheck.valid) {
-              if (bookingFeedback) bookingFeedback.textContent = "Customer email: " + custEmailCheck.error;
-              return;
-            }
-            vals.hostPhone = hostCheck.normalized;
-            vals.customerPhone = custCheck.normalized;
-            vals.customerEmail = custEmailCheck.normalized;
-
-            const entry = {
-              id: "bk-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6),
-              ...vals,
-              status: "Confirmed"
-            };
-            bookings.unshift(entry);
-            saveBookings();
-            renderBookings();
-            refreshBookingMailto();
-            if (bookingFeedback) bookingFeedback.textContent = "Saved booking for " + vals.customerName + " (" + vals.date + ", " + vals.slot + ").";
-          });
-        }
-
-        const copyBookingDraftBtn = document.getElementById("copy-booking-draft-btn");
-        if (copyBookingDraftBtn) {
-          copyBookingDraftBtn.addEventListener("click", () => {
-            copyToClipboard(formatBookingSummary(getBookingFormValues()), (ok) => {
-              if (bookingFeedback) {
-                bookingFeedback.textContent = ok ? "Booking summary copied." : "Could not copy automatically.";
-              }
-            });
-          });
-        }
-
-        const clearBookingsBtn = document.getElementById("clear-bookings-btn");
-        if (clearBookingsBtn) {
-          clearBookingsBtn.addEventListener("click", () => {
-            bookings = [];
-            saveBookings();
-            renderBookings();
-            if (bookingFeedback) bookingFeedback.textContent = "Cleared all saved bookings.";
-          });
-        }
-
-        const bookingsListEl = document.getElementById("bookings-list");
-        if (bookingsListEl) {
-          bookingsListEl.addEventListener("click", (e) => {
-            const btn = e.target instanceof Element ? e.target.closest("button[data-cycle-booking], button[data-remind-booking], button[data-del-booking]") : null;
-            if (!btn) return;
-
-            const cycleId = btn.getAttribute("data-cycle-booking");
-            if (cycleId) {
-              const target = bookings.find((b) => b.id === cycleId);
-              if (target) {
-                const idx = BOOKING_STATUSES.indexOf(target.status);
-                target.status = BOOKING_STATUSES[(idx + 1) % BOOKING_STATUSES.length];
-                saveBookings();
-                renderBookings();
-              }
-              return;
-            }
-
-            const remindId = btn.getAttribute("data-remind-booking");
-            if (remindId) {
-              const target = bookings.find((b) => b.id === remindId);
-              if (target) {
-                const firstToken = target.customerName.trim().split(/\s+/)[0].toLowerCase().replace(/[^a-z0-9]/g, "") || chatState.activeThread;
-                const threadKey = chatState.threads[firstToken] ? firstToken : chatState.activeThread;
-                openChatDrawer(threadKey);
-                appendMessage(threadKey, {
-                  sender: "You",
-                  role: "host",
-                  text: "Reminder: Your " + target.service + " is scheduled for " + target.date + " at " + target.slot + ".",
-                  time: nowTimeLabel(),
-                  photo: null
-                });
-              }
-              return;
-            }
-
-            const delId = btn.getAttribute("data-del-booking");
-            if (delId) {
-              bookings = bookings.filter((b) => b.id !== delId);
-              saveBookings();
-              renderBookings();
-            }
-          });
-        }
-
-        // Contacts form, filters, search, actions & export
-        const contactForm = document.getElementById("contact-form");
-        const contactFeedback = document.getElementById("contact-feedback");
-        const contactCancelBtn = document.getElementById("contact-cancel-btn");
-
-        if (contactForm) {
-          contactForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const editId = ((document.getElementById("contact-edit-id") || {}).value || "").trim();
-            const name = ((document.getElementById("contact-name") || {}).value || "").trim();
-            const rawPhone = ((document.getElementById("contact-phone") || {}).value || "").trim();
-            const email = ((document.getElementById("contact-email") || {}).value || "").trim();
-            const role = ((document.getElementById("contact-role") || {}).value || "Customer").trim();
-            const area = ((document.getElementById("contact-area") || {}).value || "").trim();
-            const notes = ((document.getElementById("contact-notes") || {}).value || "").trim();
-
-            if (!name) {
-              if (contactFeedback) contactFeedback.textContent = "Full name is required.";
-              return;
-            }
-
-            const phoneCheck = validatePhoneNumber(rawPhone);
-            if (!phoneCheck.valid) {
-              if (contactFeedback) contactFeedback.textContent = phoneCheck.error;
-              return;
-            }
-
-            const emailCheck = validateEmailAddress(rawEmail);
-            if (!emailCheck.valid) {
-              if (contactFeedback) contactFeedback.textContent = emailCheck.error;
-              return;
-            }
-
-            const phone = phoneCheck.normalized;
-            const email = emailCheck.normalized;
-
-            if (!phone && !email) {
-              if (contactFeedback) contactFeedback.textContent = "Please enter a phone number, an email address, or both.";
-              return;
-            }
-
-            const channelSummary = [phone, email].filter(Boolean).join(" • ");
-
-            if (editId) {
-              const existing = contacts.find((c) => c.id === editId);
-              if (existing) {
-                existing.name = name;
-                existing.phone = phone;
-                existing.email = email;
-                existing.role = role;
-                existing.area = area;
-                existing.notes = notes;
-                saveContacts();
-                syncContactInfoToChat(existing);
-                renderContacts();
-                resetContactForm();
-                if (contactFeedback) contactFeedback.textContent = "Updated contact: " + name + " (" + channelSummary + ").";
-                return;
-              }
-            }
-
-            const created = {
-              id: "cnt-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6),
-              name,
-              phone,
-              email,
-              role,
-              area,
-              notes
-            };
-            contacts.unshift(created);
-            saveContacts();
-            syncContactInfoToChat(created);
-            renderContacts();
-            resetContactForm();
-            if (contactFeedback) contactFeedback.textContent = "Added contact: " + name + " (" + channelSummary + ").";
-          });
-        }
-
-        if (contactCancelBtn) {
-          contactCancelBtn.addEventListener("click", () => {
-            resetContactForm();
-            if (contactFeedback) contactFeedback.textContent = "Edit cancelled.";
-          });
-        }
-
-        const contactSearchInput = document.getElementById("contact-search");
-        if (contactSearchInput) {
-          contactSearchInput.addEventListener("input", () => {
-            contactSearchTerm = contactSearchInput.value || "";
-            renderContacts();
-          });
-        }
-
-        document.querySelectorAll("[data-contact-role]").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            document.querySelectorAll("[data-contact-role]").forEach((b) => b.classList.remove("active"));
-            btn.classList.add("active");
-            activeContactRole = btn.getAttribute("data-contact-role") || "all";
-            renderContacts();
-          });
-        });
-
-        const contactsListEl = document.getElementById("contacts-list");
-        if (contactsListEl) {
-          contactsListEl.addEventListener("click", (e) => {
-            const btn = e.target instanceof Element ? e.target.closest("button") : null;
-            if (!btn) return;
-
-            const copyPhoneId = btn.getAttribute("data-copy-phone");
-            if (copyPhoneId) {
-              const c = contacts.find((x) => x.id === copyPhoneId);
-              if (c && c.phone) {
-                copyToClipboard(c.phone, (ok) => {
-                  if (contactFeedback) {
-                    contactFeedback.textContent = ok ? "Copied phone number " + c.phone + " for " + c.name + "." : "Could not copy phone number.";
-                  }
-                });
-              }
-              return;
-            }
-
-            const copyEmailId = btn.getAttribute("data-copy-email");
-            if (copyEmailId) {
-              const c = contacts.find((x) => x.id === copyEmailId);
-              if (c && c.email) {
-                copyToClipboard(c.email, (ok) => {
-                  if (contactFeedback) {
-                    contactFeedback.textContent = ok ? "Copied email " + c.email + " for " + c.name + "." : "Could not copy email address.";
-                  }
-                });
-              }
-              return;
-            }
-
-            const bookId = btn.getAttribute("data-book-contact");
-            if (bookId) {
-              const c = contacts.find((x) => x.id === bookId);
-              if (c) {
-                const nameEl = document.getElementById("booking-customer-name");
-                const emailEl = document.getElementById("booking-customer-email");
-                const phoneEl = document.getElementById("booking-customer-phone");
-                const notesEl = document.getElementById("booking-notes");
-                if (nameEl) nameEl.value = c.name;
-                if (emailEl) emailEl.value = c.email || "";
-                if (phoneEl) phoneEl.value = c.phone || "";
-                if (notesEl) notesEl.value = [c.area, c.notes].filter(Boolean).join(" • ");
-                refreshBookingMailto();
-                const schedSec = document.getElementById("scheduling-booking");
-                if (schedSec && typeof schedSec.scrollIntoView === "function") {
-                  schedSec.scrollIntoView({ behavior: "smooth" });
-                }
-              }
-              return;
-            }
-
-            const chatId = btn.getAttribute("data-chat-contact");
-            if (chatId) {
-              const c = contacts.find((x) => x.id === chatId);
-              if (c) {
-                const token = c.name.trim().split(/\s+/)[0].toLowerCase().replace(/[^a-z0-9]/g, "") || "client";
-                const key = ensureThread(token);
-                if (c.phone) chatState.phones[key] = c.phone;
-                if (c.email) chatState.emails[key] = c.email;
-                saveChatState();
-                openChatDrawer(key);
-              }
-              return;
-            }
-
-            const copyId = btn.getAttribute("data-copy-contact");
-            if (copyId) {
-              const c = contacts.find((x) => x.id === copyId);
-              if (c) {
-                const info = [c.name, c.role, c.phone, c.email, c.area, c.notes].filter(Boolean).join(" | ");
-                copyToClipboard(info, (ok) => {
-                  if (contactFeedback) {
-                    contactFeedback.textContent = ok ? "Copied " + c.name + " to clipboard." : "Could not copy automatically.";
-                  }
-                });
-              }
-              return;
-            }
-
-            const editId = btn.getAttribute("data-edit-contact");
-            if (editId) {
-              const c = contacts.find((x) => x.id === editId);
-              if (c) {
-                const idField = document.getElementById("contact-edit-id");
-                const nameField = document.getElementById("contact-name");
-                const phoneField = document.getElementById("contact-phone");
-                const emailField = document.getElementById("contact-email");
-                const roleField = document.getElementById("contact-role");
-                const areaField = document.getElementById("contact-area");
-                const notesField = document.getElementById("contact-notes");
-                const titleEl = document.getElementById("contact-form-title");
-                const saveBtn = document.getElementById("contact-save-btn");
-                const cancelBtn = document.getElementById("contact-cancel-btn");
-
-                if (idField) idField.value = c.id;
-                if (nameField) nameField.value = c.name || "";
-                if (phoneField) phoneField.value = c.phone || "";
-                if (emailField) emailField.value = c.email || "";
-                if (roleField) roleField.value = c.role || "Customer";
-                if (areaField) areaField.value = c.area || "";
-                if (notesField) notesField.value = c.notes || "";
-                if (titleEl) titleEl.textContent = "Edit Contact";
-                if (saveBtn) saveBtn.textContent = "Update Contact";
-                if (cancelBtn) cancelBtn.hidden = false;
-              }
-              return;
-            }
-
-            const delId = btn.getAttribute("data-del-contact");
-            if (delId) {
-              contacts = contacts.filter((x) => x.id !== delId);
-              saveContacts();
-              renderContacts();
-              if (contactFeedback) contactFeedback.textContent = "Contact removed.";
-            }
-          });
-        }
-
-        const exportJsonBtn = document.getElementById("export-json-btn");
-        if (exportJsonBtn) {
-          exportJsonBtn.addEventListener("click", () => {
-            const payload = JSON.stringify(contacts, null, 2);
-            try {
-              const blob = new Blob([payload], { type: "application/json" });
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement("a");
-              a.href = url;
-              a.download = "jobline-vault-contacts.json";
-              document.body.appendChild(a);
-              a.click();
-              document.body.removeChild(a);
-              setTimeout(() => URL.revokeObjectURL(url), 500);
-              if (contactFeedback) contactFeedback.textContent = "Exported contacts JSON.";
-            } catch (_err) {
-              copyToClipboard(payload, (ok) => {
-                if (contactFeedback) contactFeedback.textContent = ok ? "Copied contacts JSON to clipboard." : "Export unavailable.";
-              });
-            }
-          });
-        }
-
-        const exportCsvBtn = document.getElementById("export-csv-btn");
-        if (exportCsvBtn) {
-          exportCsvBtn.addEventListener("click", () => {
-            const escCsv = (v) => '"' + String(v || "").replace(/"/g, '""') + '"';
-            const lines = ["Name,Phone,Email,Role,Area,Notes"];
-            contacts.forEach((c) => {
-              lines.push([escCsv(c.name), escCsv(c.phone), escCsv(c.email), escCsv(c.role), escCsv(c.area), escCsv(c.notes)].join(","));
-            });
-            const csv = lines.join("\n");
-            try {
-              const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement("a");
-              a.href = url;
-              a.download = "jobline-vault-contacts.csv";
-              document.body.appendChild(a);
-              a.click();
-              document.body.removeChild(a);
-              setTimeout(() => URL.revokeObjectURL(url), 500);
-              if (contactFeedback) contactFeedback.textContent = "Exported contacts CSV.";
-            } catch (_err) {
-              copyToClipboard(csv, (ok) => {
-                if (contactFeedback) contactFeedback.textContent = ok ? "Copied contacts CSV to clipboard." : "Export unavailable.";
-              });
-            }
-          });
-        }
-
-        const resetContactsBtn = document.getElementById("reset-contacts-btn");
-        if (resetContactsBtn) {
-          resetContactsBtn.addEventListener("click", () => {
-            contacts = DEFAULT_CONTACTS.map((c) => ({ ...c }));
-            saveContacts();
-            renderContacts();
-            resetContactForm();
-            if (contactFeedback) contactFeedback.textContent = "Restored demo contacts.";
-          });
-        }
-
-        // Floating chat widget bindings
-        const launcherBtn = document.getElementById("floating-chat-launcher");
-        const navChatBtn = document.getElementById("nav-open-chat-btn");
-        const closeChatBtn = document.getElementById("chat-close-btn");
-        if (launcherBtn) launcherBtn.addEventListener("click", toggleChatDrawer);
-        if (navChatBtn) navChatBtn.addEventListener("click", () => openChatDrawer());
-        if (closeChatBtn) closeChatBtn.addEventListener("click", closeChatDrawer);
-
-        const threadBar = document.getElementById("chat-thread-bar");
-        if (threadBar) {
-          threadBar.addEventListener("click", (e) => {
-            const tab = e.target instanceof Element ? e.target.closest("[data-select-thread]") : null;
-            if (!tab) return;
-            const k = ensureThread(tab.getAttribute("data-select-thread"));
-            chatState.activeThread = k;
-            chatState.unread[k] = 0;
-            saveChatState();
-            renderChatWidget();
-          });
-        }
-
-        const chatSearchInput = document.getElementById("chat-search-input");
-        const chatSearchClearBtn = document.getElementById("chat-search-clear-btn");
-        if (chatSearchInput) {
-          chatSearchInput.addEventListener("input", () => {
-            chatSearchQuery = chatSearchInput.value || "";
-            renderChatWidget();
-          });
-        }
-        if (chatSearchClearBtn) {
-          chatSearchClearBtn.addEventListener("click", () => {
-            chatSearchQuery = "";
-            if (chatSearchInput) chatSearchInput.value = "";
-            renderChatWidget();
-          });
-        }
-
-        const permReqBtn = document.getElementById("photo-perm-request-btn");
-        const permRevBtn = document.getElementById("photo-perm-toggle-btn");
-        if (permReqBtn) permReqBtn.addEventListener("click", () => requestPhotoAccess());
-        if (permRevBtn) permRevBtn.addEventListener("click", revokePhotoAccess);
-
-        const fileInput = document.getElementById("chat-file-input");
-        const cameraInput = document.getElementById("chat-camera-input");
-        const pickPhotoBtn = document.getElementById("chat-pick-photo-btn");
-        const cameraPhotoBtn = document.getElementById("chat-camera-photo-btn");
-
-        if (pickPhotoBtn) {
-          pickPhotoBtn.addEventListener("click", () => {
-            requestPhotoAccess(() => {
-              if (fileInput) fileInput.click();
-            });
-          });
-        }
-        if (cameraPhotoBtn) {
-          cameraPhotoBtn.addEventListener("click", () => {
-            requestPhotoAccess(() => {
-              if (cameraInput) cameraInput.click();
-            });
-          });
-        }
-        if (fileInput) {
-          fileInput.addEventListener("change", () => {
-            const f = fileInput.files && fileInput.files[0];
-            if (f) handlePhotoFile(f);
-            fileInput.value = "";
-          });
-        }
-        if (cameraInput) {
-          cameraInput.addEventListener("change", () => {
-            const f = cameraInput.files && cameraInput.files[0];
-            if (f) handlePhotoFile(f);
-            cameraInput.value = "";
-          });
-        }
-
-        const removePendingBtn = document.getElementById("remove-pending-photo-btn");
-        if (removePendingBtn) {
-          removePendingBtn.addEventListener("click", () => {
-            pendingPhoto = null;
-            renderPendingPhoto();
-          });
-        }
-
-        const composer = document.getElementById("chat-composer");
-        if (composer) {
-          composer.addEventListener("dragover", (e) => {
-            e.preventDefault();
-            composer.classList.add("drag-over");
-          });
-          composer.addEventListener("dragleave", () => {
-            composer.classList.remove("drag-over");
-          });
-          composer.addEventListener("drop", (e) => {
-            e.preventDefault();
-            composer.classList.remove("drag-over");
-            const files = e.dataTransfer && e.dataTransfer.files;
-            if (files && files[0]) {
-              requestPhotoAccess(() => handlePhotoFile(files[0]));
-            }
-          });
-
-          composer.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const inputEl = document.getElementById("chat-input");
-            const fb = document.getElementById("chat-feedback");
-            const text = (inputEl && inputEl.value ? inputEl.value : "").trim();
-            if (!text && !pendingPhoto) {
-              if (fb) fb.textContent = "Enter a message or attach a photo before sending.";
-              return;
-            }
-            const photoToSend = pendingPhoto ? { ...pendingPhoto } : null;
-            appendMessage(chatState.activeThread, {
-              sender: "You",
-              role: "host",
-              text,
-              time: nowTimeLabel(),
-              photo: photoToSend
-            });
-        // Floating chat thread phone & email controls
-        const editContactInfoBtn = document.getElementById("chat-edit-contact-info-btn");
-        const contactEditRow = document.getElementById("chat-contact-edit-row");
-        const phoneEditInput = document.getElementById("chat-phone-edit-input");
-        const emailEditInput = document.getElementById("chat-email-edit-input");
-        const contactInfoSaveBtn = document.getElementById("chat-contact-info-save-btn");
-        const copyThreadPhoneBtn = document.getElementById("chat-thread-copy-phone-btn");
-        const copyThreadEmailBtn = document.getElementById("chat-thread-copy-email-btn");
-        const shareContactInfoBtn = document.getElementById("chat-share-contact-info-btn");
-
-        if (editContactInfoBtn && contactEditRow) {
-          editContactInfoBtn.addEventListener("click", () => {
-            contactEditRow.hidden = !contactEditRow.hidden;
-            if (!contactEditRow.hidden) {
-              if (phoneEditInput) phoneEditInput.value = getThreadPhone(chatState.activeThread) || "";
-              if (emailEditInput) emailEditInput.value = getThreadEmail(chatState.activeThread) || "";
-              if (phoneEditInput) phoneEditInput.focus();
-            }
-          });
-        }
-
-        if (contactInfoSaveBtn) {
-          contactInfoSaveBtn.addEventListener("click", () => {
-            const fb = document.getElementById("chat-feedback");
-            const phoneCheck = validatePhoneNumber(phoneEditInput ? phoneEditInput.value : "");
-            if (!phoneCheck.valid) {
-              if (fb) fb.textContent = phoneCheck.error;
-              return;
-            }
-            const emailCheck = validateEmailAddress(emailEditInput ? emailEditInput.value : "");
-            if (!emailCheck.valid) {
-              if (fb) fb.textContent = emailCheck.error;
-              return;
-            }
-            const key = ensureThread(chatState.activeThread);
-            chatState.phones[key] = phoneCheck.normalized;
-            chatState.emails[key] = emailCheck.normalized;
-            saveChatState();
-            syncChatInfoToContact(key, phoneCheck.normalized, emailCheck.normalized);
-            renderChatContactBar();
-            if (contactEditRow) contactEditRow.hidden = true;
-            const summary = [phoneCheck.normalized, emailCheck.normalized].filter(Boolean).join(" • ");
-            if (fb) {
-              fb.textContent = summary
-                ? "Saved contact info for " + getThreadDisplayName(key) + ": " + summary + "."
-                : "Cleared phone and email for " + getThreadDisplayName(key) + ".";
-            }
-          });
-        }
-
-        if (copyThreadPhoneBtn) {
-          copyThreadPhoneBtn.addEventListener("click", () => {
-            const phone = getThreadPhone(chatState.activeThread);
-            const fb = document.getElementById("chat-feedback");
-            if (!phone) return;
-            copyToClipboard(phone, (ok) => {
-              if (fb) fb.textContent = ok ? "Copied phone number " + phone + "." : "Could not copy phone number.";
-            });
-          });
-        }
-
-        if (copyThreadEmailBtn) {
-          copyThreadEmailBtn.addEventListener("click", () => {
-            const email = getThreadEmail(chatState.activeThread);
-            const fb = document.getElementById("chat-feedback");
-            if (!email) return;
-            copyToClipboard(email, (ok) => {
-              if (fb) fb.textContent = ok ? "Copied email " + email + "." : "Could not copy email address.";
-            });
-          });
-        }
-
-        if (shareContactInfoBtn) {
-          shareContactInfoBtn.addEventListener("click", () => {
-            const key = ensureThread(chatState.activeThread);
-            const phone = getThreadPhone(key);
-            const email = getThreadEmail(key);
-            const fb = document.getElementById("chat-feedback");
-            const parts = [phone ? "Phone: " + phone : "", email ? "Email: " + email : ""].filter(Boolean);
-            if (!parts.length) {
-              if (contactEditRow) contactEditRow.hidden = false;
-              if (phoneEditInput) phoneEditInput.focus();
-              if (fb) fb.textContent = "Add a phone number or email first to post it in chat.";
-              return;
-            }
-            appendMessage(key, {
-              sender: "You",
-              role: "host",
-              text: "Contact details for " + getThreadDisplayName(key) + " — " + parts.join(" | "),
-              time: nowTimeLabel(),
-              photo: null
-            });
-          });
-        }
-      }
-
-      document.addEventListener("DOMContentLoaded", () => {
-        try {
-          const tzLabel = document.getElementById("local-tz-label");
-          if (tzLabel) tzLabel.textContent = getLocalTimeZoneLabel();
-
-          const dateInput = document.getElementById("booking-date");
-          if (dateInput && !dateInput.value) {
-            const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
-            const iso = tomorrow.toISOString().slice(0, 10);
-            dateInput.value = iso;
-          }
-
-          renderStarterKits();
-          renderMonthlyDrops();
-          updateQuoteDisplay();
-          syncContactPicker();
-          renderContacts();
-          renderBookings();
-          refreshBookingMailto();
-          renderChatWidget();
-          bindAllEvents();
-        } catch (err) {
-          console.error("Jobline Vault initialization error:", err);
+        } else {
+          els.status.textContent = "Copy unavailable in this browser context.";
         }
       });
+
+      els.resetBtn.addEventListener("click", () => {
+        els.year.value = "2011";
+        els.make.value = "Jeep";
+        els.model.value = "Compass";
+        els.engine.value = "2.4L 4-Cyl";
+        els.vin.value = "";
+        els.filter.value = "all";
+        renderComparison();
+        els.status.textContent = "Reset vehicle fields.";
+      });
+
+      const saved = safeGet("jobline_car_lookup");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed.year) els.year.value = parsed.year;
+          if (parsed.make) els.make.value = parsed.make;
+          if (parsed.model) els.model.value = parsed.model;
+          if (parsed.engine !== undefined) els.engine.value = parsed.engine;
+          if (parsed.vin !== undefined) els.vin.value = parsed.vin;
+          if (parsed.filter) els.filter.value = parsed.filter;
+        } catch (e) {}
+      }
+
+      renderComparison();
     })();
   </script>
 </body>
-  </html>
+</html>
