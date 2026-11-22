@@ -266,6 +266,12 @@
             </select>
           </label>
           <label>
+            Make
+            <select id="car-make">
+              <option value="">Select Make</option>
+            </select>
+          </label>
+          <label>
             Search Model
             <input type="search" id="model-search" list="all-models-list" placeholder="Search model (e.g., Compass, F-150)" />
             <datalist id="all-models-list"></datalist>
@@ -279,12 +285,6 @@
           <label>
             Year
             <input type="number" id="car-year" min="1950" max="2027" placeholder="e.g., 2018" />
-          </label>
-          <label>
-            Make
-            <select id="car-make">
-              <option value="">Select Make</option>
-            </select>
           </label>
           <label>
             Part Filter
@@ -496,11 +496,11 @@
       const els = {
         form: document.getElementById("vehicle-form"),
         kind: document.getElementById("car-kind"),
+        make: document.getElementById("car-make"),
         modelSearch: document.getElementById("model-search"),
         allModelsList: document.getElementById("all-models-list"),
-        year: document.getElementById("car-year"),
-        make: document.getElementById("car-make"),
         model: document.getElementById("car-model"),
+        year: document.getElementById("car-year"),
         filter: document.getElementById("part-filter"),
         body: document.getElementById("comparison-body"),
         heading: document.getElementById("results-heading"),
@@ -660,10 +660,10 @@
 
         safeSet("jobline_all_makes_parts", JSON.stringify({
           kind: els.kind.value,
-          modelSearch: els.modelSearch.value,
-          year: els.year.value,
           make: els.make.value,
+          modelSearch: els.modelSearch.value,
           model: els.model.value,
+          year: els.year.value,
           filter: els.filter.value
         }));
       }
@@ -675,6 +675,11 @@
       els.kind.addEventListener("change", () => {
         populateMakes(true);
         populateModels(els.make.value, true);
+        renderComparison();
+      });
+
+      els.make.addEventListener("change", () => {
+        populateModels(els.make.value, false);
         renderComparison();
       });
 
@@ -701,11 +706,6 @@
           renderComparison();
         }
         els.status.textContent = 'Searching "' + searchTerm + '" (' + partName + ") on " + storeName + " for " + getVehicleLabel() + "...";
-      });
-
-      els.make.addEventListener("change", () => {
-        populateModels(els.make.value, false);
-        renderComparison();
       });
 
       els.model.addEventListener("change", renderComparison);
